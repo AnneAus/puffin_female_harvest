@@ -1,0 +1,172 @@
+---
+# ------------------------------------------------------------------
+# Marine Ornithology manuscript template (Quarto -> Word)
+# Delete these comment lines before submission; they are notes only.
+# ------------------------------------------------------------------
+format:
+  docx:
+    reference-doc: MO_reference_doc.docx
+    toc: false
+    number-sections: false
+csl: Marine_Ornithology.csl
+bibliography: references.bib
+crossref:
+  fig-title: FIGURE
+  tbl-title: TABLE
+  title-delim: "."
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+<!--
+Do not fill in Quarto's title/author/date YAML fields above -- Marine
+Ornithology's title block (all-caps title, all-caps author line with
+superscript affiliation numbers, italic address block) does not match
+Quarto's automatic title page, so the whole header below is built by
+hand with custom-style divs that point at paragraph styles defined in
+MO_reference_doc.docx. Leave the YAML title/author fields empty/absent
+or you will get a duplicate, wrongly-styled header at the top of the
+Word file.
+-->
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+```
+
+::: {custom-style="Title"}
+Full title of the manuscript in sentence case here (the Title style displays it in caps automatically)
+:::
+
+::: {custom-style="Author"}
+JANE Q. SEABIRD^1^, JOHN P. TUBENOSE^2,3^
+:::
+
+::: {custom-style="Address"}
+^1^School of Environmental Studies, University of Example, Melbourne, Australia. (jane.seabird@example.edu)\
+^2^Department of Marine Biology, University of Otherplace, Otherplace, Country\
+^3^Current address: Institute of Seabird Research, Somewhere, Country
+:::
+
+<!--
+ABSTRACT: per the Instructions to Authors, the heading is centred, and
+is followed by (1) the citation of this article in reference format,
+(2) the abstract text (<=300 words for papers >2,000 words; <=100
+words for short notes <2,000 words; no tables, figures, or citations),
+and (3) five to seven key words. Short notes may omit headings
+entirely.
+-->
+
+::: {custom-style="AbstractHeading"}
+Abstract
+:::
+
+::: {custom-style="Abstract"}
+SEABIRD, J.Q. & TUBENOSE, J.P. (2026) Full title of the manuscript in sentence case here. *Marine Ornithology* 54: 1-10.
+
+Replace this paragraph with the abstract text (one paragraph, no citations, tables, or figures).
+:::
+
+::: {custom-style="Abstract"}
+**Key words:** keyword one, keyword two, keyword three, keyword four, keyword five
+:::
+
+# INTRODUCTION
+
+Body text starts here. First-level headings (INTRODUCTION, METHODS,
+RESULTS, DISCUSSION, CONCLUSIONS, ACKNOWLEDGEMENTS, REFERENCES) are
+left-aligned and rendered in caps automatically by the Heading 1
+style -- type them in normal sentence case if you prefer, e.g.
+`# Introduction`.
+
+Cite sources in APA7 author-date form, e.g. as shown by Smith and
+Jones [@exampleCitation2024] or in parenthetical form
+[@exampleCitation2024]. Multiple parenthetical citations are sorted
+alphabetically and separated by semicolons automatically by the CSL
+style.
+
+Upon first mention of a species in the abstract and body text (and in
+figure/table captions), give the English common name directly followed
+by the scientific name, no parentheses or comma, e.g. Sooty Shearwater
+*Ardenna grisea*. Italicize genus/species names; capitalize English
+species names but not group names (e.g. "petrels").
+
+# METHODS
+
+## Statistical analysis
+
+Second-level headings use sentence case (only the first word and
+proper nouns capitalized) and stay left-aligned, e.g. "Statistical
+analysis" above.
+
+### Multivariate methods
+
+Third-level headings are italic sentence case, e.g. "Multivariate
+methods" above. Use third-level headings sparingly.
+
+Report statistics with an indicator of variance and significance;
+italicize statistical notation (*n*, *P*, *t*, *F*) by wrapping it in
+asterisks, e.g. `*n*` and `*P*` render as *n* and *P*.
+
+Include an ethics statement here if the study involved field work or
+handling of live birds/eggs (institution name, permit numbers, animal
+care committee certification).
+
+# RESULTS
+
+<!--
+Figures: embed as separate pages/images; captions are listed together
+on a caption page in the final manuscript, numbered in order of first
+mention, sub-panels labelled A, B, etc. Quarto's automatic
+fig-cap/crossref numbering is a convenience for drafting -- reformat
+captions to match MO's centred "TABLE 1"/figure caption style at
+final copy-edit if the auto-generated caption does not match exactly.
+-->
+
+```{r}
+#| label: fig-example
+#| fig-cap: "Descriptive title of the figure, including region/country and Latin names for species."
+#| eval: false
+# plot code here
+```
+
+<!--
+Tables: numbered in order of mention, one per page in the submitted
+manuscript, with "TABLE 1" centred above a brief descriptive title.
+Footnotes use superscript lowercase letters (a, b, c) defined below
+the table, in order of appearance left-to-right, top-to-bottom.
+-->
+
+```{r}
+#| label: tbl-example
+#| tbl-cap: "Brief descriptive title of the table content."
+#| eval: false
+# table code here, e.g. knitr::kable(...) or gt::gt(...)
+```
+
+# DISCUSSION
+
+Body text continues here.
+
+# CONCLUSIONS
+
+Include only if needed to summarize the Discussion.
+
+# ACKNOWLEDGEMENTS
+
+<!--
+State sources of support/funding here. Consider adding a CRediT
+statement, e.g.:
+Conceptualization: JQS, JPT. Formal analysis: JQS. Funding acquisition:
+JPT. Investigation: JQS, JPT. Methodology: JQS, JPT. Project
+administration: JPT. Writing--original draft: JQS. Writing--review &
+editing: all coauthors.
+-->
+
+# REFERENCES
+
+::: {#refs}
+:::

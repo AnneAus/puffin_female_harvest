@@ -1,0 +1,127 @@
+---
+format:
+  docx:
+    reference-doc: ../MO_reference_doc.docx
+    toc: false
+    number-sections: false
+    fig-dpi: 500
+csl: ../Marine_Ornithology.csl
+bibliography: ../references.bib
+crossref:
+  fig-title: "**Fig.**"
+  fig-prefix: "Fig."
+  tbl-title: TABLE
+  title-delim: "."
+execute:
+  echo: false
+  warning: false
+  message: false
+editor: source
+---
+
+::: {custom-style="Title"}
+\[title\]
+:::
+
+::: {custom-style="Author"}
+ANNE N.M.A. AUSEMS^1^, JENS-KJELD JENSEN^2^
+:::
+
+::: {custom-style="Address"}
+^1^Department of Ecoscience, Aarhus University, Denmark. (anneausems\@ecos.au.dk)\
+^2^Nólsoy, Faroe Islands
+:::
+
+# ABSTRACT
+
+**Key words:**
+
+# INTRODUCTION
+
+Global climate change and increasing human-induced environmental change are causing large-scale declines in many seabird species [@diasThreatsSeabirdsGlobal2019]. Some threats have indirect effects, for example, climate change may cause a decline in food availability leading to lower breeding success, and eventually observable population declines [@fayetLocalPreyShortages2021], while others directly cause mortality, such as bycatch and hunting. In long-lived species such as seabirds, changes in adult survival can have strong effects on population dynamics [@jenouvrierModellingPopulationDynamics2005a; @dohertyTestingLifeHistory2004], so even minor threats directly affecting it can have large impacts, especially on already vulnerable species. In contrast, the elasticity of the population growth rate to breeding success and recruitment rate is relatively low, but they can react strongly to changes in environmental conditions [@jenouvrierModellingPopulationDynamics2005a], thus ultimately having the strongest effect on population growth rate overall [@milesDeclineAtlanticPuffin2015].
+
+Atlantic puffins (*Fratecula arctica*; hereafter 'puffin') are rapidly declining across most of their European range [@birdlifeinternationalSpeciesFactsheetFratercula2021], and they are classified as ‘Vulnerable’ globally and ‘Endangered’ in Europe [@birdlifeinternationalFraterculaArcticaIUCN2018]. Puffin population declines are largely linked to changes in food availability causing declines in breeding success [@fayetLocalPreyShortages2021] and thus recruitment rate leading to increases in the age of the population [@ausemsVariationFoodAvailability2026]. Generally, puffins start breeding when they are between 4 and 5 years, though occasionally they can start at 3 years old and often the first breeding attempt is at a later age [@lowtherAtlanticPuffinFratercula2020]. Annual survival of both immatures and adults is high [@sandvikHighSurvivalImmatures2008], though immature survival may vary between sites and years (see @ashcroftSurvivalRatesBreeding1979), and immatures are highly philopatric [@sandvikHighSurvivalImmatures2008].
+
+In Føroyar (Eng. Faroe Islands; @fig-map), harvesting puffins is a long-stranding, culturally important tradition, where hunters catch flying puffins from set locations on land using a special made net. Puffins are a widespread species in the islands, with an estimated 550,000 breeding pairs in approximately 100 colonies [@jensenListBirdsSeen2005 @hammerFaeroskTraekfugleatlasFaroese2014]. However, as in other areas, their population shows observed, but unquantified, declines in Føroyar. Overharvesting has long been understood to negatively affect the local population [@jensenTraditionsPuffinFowling2020], and, on Nólsoy (@fig-map), the harvest was voluntarily halted in 2009 until the population was deemed stable enough in 2021 to sustain limited harvesting [@ausemsVariationFoodAvailability2026].
+
+Puffin hunters, or fowlers, follow a set of rules, intended to ensure only young, prospecting birds are caught and catching breeding adults is avoided [@jensenPuffinFowlingaFowling2010]. Firstly, puffin harvesting is restricted to the chick-rearing period as this makes it easier to distinguish breeding adults and prospecting juveniles [@jensenPuffinFowlingaFowling2010]. During the breeding season, puffins take part in 'wheeling-flight', where large groups of birds fly in circles or figure-8's over the colony and surrounding water [@lowtherAtlanticPuffinFratercula2020]. It is assumed that only prospecting birds take part in this behaviour, while breeding adults will either be identifiable by them carrying fish to their nest or directly heading back to sea to collect more food for the chick [@jensenPuffinFowlingaFowling2010]. In addition, if a bird with wet bill and cheeks is caught, it is released again, as that is a sign of a bird having just delivered fish to its young.
+
+However, ongoing global climate change and anthropogenic impacts have altered puffin breeding phenology and propensity. In northern latitudes, puffins are breeding later [@burrLaterHigherLatitudes2016] in response to environmental conditions [@durantRegimeShiftsBreeding2004]. Furthermore, birds are forced to forage further offshore to find sufficient food, leading to increases in breeding failures [@fayetLocalPreyShortages2021]. Together, these changes may affect the efficacy of the self-imposed rules; non-incubating partners and failed breeders may take part in the 'wheeling-flight' behaviour without showing the tell-tale signs of being of breeding age.
+
+Using a 20-year dataset on legally harvested puffins [@fuglaveiduloginLogtingslogUmFuglaveidu1984], we tested whether adults of breeding age were harvested. We hypothesise that, as the overall age of the population is increasing and the proportion of young (i.e., \<4 calendar years) is declining [@ausemsVariationFoodAvailability2026], the ratio of adults of breeding age increased over the study period. Secondly, we tested whether breeding propensity changed over time by assessing brood patch presence in the sample. Brood patch formation is induced by hormones before the breeding season [@jonesIncubationPatchBirds1971] but it quickly disappears when a bird is not incubating an egg [@baileyIncubationPatchPasserine1952]. While the presence of a brood patch can be a misleading sign of breeding status [@tranquillaReliabilityBroodPatches2003], we assumed that, at the time of the puffin hunt, prospecting and failed breeders would have refeathered their brood patch while actively incubating birds still retained theirs. We predicted that birds of breeding age would be less likely to have a brood patch later in the study period, indicating increased breeding failures or an increase in birds foregoing breeding.
+
+# Methods
+
+```{r map}
+#| label: fig-map
+#| fig-cap: "Location of the study sites (red dots)."
+#| fig-width: 7
+#| fig-height: 7.1
+
+library(tidyverse)
+library(rnaturalearth)
+library(rnaturalearthhires)
+library(ggrepel)
+library(patchwork)
+
+theme_set(theme_classic(base_size = 12))
+
+colonies <- data.frame(colony = c("Nólsoy", "Mykines"),
+                       lat = c(62.00789001851889, 62.103414825800776),
+                       lon = c(-6.6711706566310465, -7.644370048977779),
+                       seg_col = c(NA, "black"))
+
+world <- ne_countries(scale = "large", returnclass = "sf")
+
+faroe_coastline <- sf::st_read("../data/faroe_coastline.gpkg", quiet = TRUE)
+
+map1_xlim <- c(-8, -5.5)
+map1_ylim <- c(61.2, 62.5)
+
+map1_aspect <- diff(map1_ylim) / (diff(map1_xlim) * cos(mean(map1_ylim) * pi / 180))
+
+map1 <- ggplot(data = faroe_coastline) +
+  geom_sf(col = "black", fill = NA) +
+  coord_sf(xlim = map1_xlim, ylim = map1_ylim,
+           expand = FALSE) +
+  geom_point(aes(x = lon, y = lat),
+             data = colonies,
+             size = 3, col = "red") +
+  geom_text_repel(aes(x = lon, y = lat, 
+                      label = colony, segment.color = I(seg_col)),
+                  size = 5,
+                  data = colonies,
+                  nudge_y = c(0, -0.02),
+                  nudge_x = c(0.17, 0)) +
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.15, "in"), pad_y = unit(0.25, "in"),
+        height = unit(0.5, "in"), width = unit(0.4, "in"), 
+        style = ggspatial::north_arrow_orienteering(text_size = 15, 
+                                                    text_face = "bold")) +
+  labs(x = "Longitude (Decimal Degrees)",
+       y = "Latitude (Decimal Degrees)",
+       caption = "© OpenStreetMap contributors, ODbL 1.0") 
+
+inset <- ggplot(data = world) +
+  geom_sf(col = "black", fill = NA) +
+  coord_sf(xlim = c(-20, 10), ylim = c(50, 65),
+           expand = FALSE) +
+  geom_rect(xmin = map1_xlim[1], xmax = map1_xlim[2],
+            ymin = map1_ylim[1], ymax = 62.6,
+            fill = NA, col = "black",
+            linewidth = 0.75) +
+  labs(x = NULL,
+       y = NULL) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = margin(1, 1, 0, 1))
+
+map1 <- map1 +
+  inset_element(inset, left = 0.62, bottom = 0, right = 1, top = 0.42)
+
+map1
+
+ggsave("../figures/map1.tiff", width = 7, height = 7 * map1_aspect, dpi = 500)
+```
+
+# REFERENCES
