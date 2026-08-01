@@ -19,6 +19,14 @@ execute:
 editor: source
 ---
 
+```{r libraries}
+library(tidyverse)
+library(brms)
+library(seabiRd)
+
+theme_set(theme_classic(base_size = 12))
+```
+
 ::: {custom-style="Title"}
 \[title\]
 :::
@@ -40,9 +48,9 @@ ANNE N.M.A. AUSEMS^1^, JENS-KJELD JENSEN^2^
 
 Global climate change and increasing human-induced environmental change are causing large-scale declines in many seabird species [@diasThreatsSeabirdsGlobal2019]. Some threats have indirect effects, for example, climate change may cause a decline in food availability leading to lower breeding success, and eventually observable population declines [@fayetLocalPreyShortages2021], while others directly cause mortality, such as bycatch and hunting. In long-lived species such as seabirds, changes in adult survival can have strong effects on population dynamics [@jenouvrierModellingPopulationDynamics2005a; @dohertyTestingLifeHistory2004], so even minor threats directly affecting it can have large impacts, especially on already vulnerable species. In contrast, the elasticity of the population growth rate to breeding success and recruitment rate is relatively low, but they can react strongly to changes in environmental conditions [@jenouvrierModellingPopulationDynamics2005a], thus ultimately having the strongest effect on population growth rate overall [@milesDeclineAtlanticPuffin2015].
 
-Atlantic puffins (*Fratecula arctica*; hereafter 'puffin') are rapidly declining across most of their European range [@birdlifeinternationalSpeciesFactsheetFratercula2021], and they are classified as ‘Vulnerable’ globally and ‘Endangered’ in Europe [@birdlifeinternationalFraterculaArcticaIUCN2018]. Puffin population declines are largely linked to changes in food availability causing declines in breeding success [@fayetLocalPreyShortages2021] and thus recruitment rate leading to increases in the age of the population [@ausemsVariationFoodAvailability2026]. Generally, puffins start breeding when they are between 4 and 5 years, though occasionally they can start at 3 years old and often the first breeding attempt is at a later age [@lowtherAtlanticPuffinFratercula2020]. Annual survival of both immatures and adults is high [@sandvikHighSurvivalImmatures2008], though immature survival may vary between sites and years (see @ashcroftSurvivalRatesBreeding1979), and immatures are highly philopatric [@sandvikHighSurvivalImmatures2008].
+Atlantic puffins (*Fratecula arctica*; hereafter 'puffin') are rapidly declining across most of their European range [@birdlifeinternationalSpeciesFactsheetFratercula2021], and they are classified as ‘Vulnerable’ globally and ‘Endangered’ in Europe [@birdlifeinternationalFraterculaArcticaIUCN2018]. Puffin population declines are largely linked to changes in food availability causing declines in breeding success [@fayetLocalPreyShortages2021] and thus recruitment rate leading to increases in the age of the population [@ausemsVariationFoodAvailability2026]. Generally, puffins start breeding when they are between 4 and 5 years, though occasionally they can start at 3 years old and often the first breeding attempt is at a later age [@lowtherAtlanticPuffinFratercula2020]. Annual survival of both immatures and adults is high [@sandvikHighSurvivalImmatures2008], though immature survival may vary between sites and years [see @ashcroftSurvivalRatesBreeding1979], and immatures are highly philopatric [@sandvikHighSurvivalImmatures2008].
 
-In Føroyar (Eng. Faroe Islands; @fig-map), harvesting puffins is a long-stranding, culturally important tradition, where hunters catch flying puffins from set locations on land using a special made net. Puffins are a widespread species in the islands, with an estimated 550,000 breeding pairs in approximately 100 colonies [@jensenListBirdsSeen2005 @hammerFaeroskTraekfugleatlasFaroese2014]. However, as in other areas, their population shows observed, but unquantified, declines in Føroyar. Overharvesting has long been understood to negatively affect the local population [@jensenTraditionsPuffinFowling2020], and, on Nólsoy (@fig-map), the harvest was voluntarily halted in 2009 until the population was deemed stable enough in 2021 to sustain limited harvesting [@ausemsVariationFoodAvailability2026].
+In Føroyar (Eng. Faroe Islands; @fig-map), harvesting puffins is a long-stranding, culturally important tradition, where hunters catch flying puffins from set locations on land using a special made net. Puffins are a widespread species in the islands, with an estimated 550,000 breeding pairs in approximately 100 colonies [@jensenListBirdsSeen2005; @hammerFaeroskTraekfugleatlasFaroese2014]. However, as in other areas, their population shows observed, but unquantified, declines in Føroyar. Overharvesting has long been understood to negatively affect the local population [@jensenTraditionsPuffinFowling2020], and, on Nólsoy (@fig-map), the harvest was voluntarily halted in 2009 until the population was deemed stable enough in 2021 to sustain limited harvesting [@ausemsVariationFoodAvailability2026].
 
 Puffin hunters, or fowlers, follow a set of rules, intended to ensure only young, prospecting birds are caught and catching breeding adults is avoided [@jensenPuffinFowlingaFowling2010]. Firstly, puffin harvesting is restricted to the chick-rearing period as this makes it easier to distinguish breeding adults and prospecting juveniles [@jensenPuffinFowlingaFowling2010]. During the breeding season, puffins take part in 'wheeling-flight', where large groups of birds fly in circles or figure-8's over the colony and surrounding water [@lowtherAtlanticPuffinFratercula2020]. It is assumed that only prospecting birds take part in this behaviour, while breeding adults will either be identifiable by them carrying fish to their nest or directly heading back to sea to collect more food for the chick [@jensenPuffinFowlingaFowling2010]. In addition, if a bird with wet bill and cheeks is caught, it is released again, as that is a sign of a bird having just delivered fish to its young.
 
@@ -52,13 +60,217 @@ Using a 20-year dataset on legally harvested puffins [@fuglaveiduloginLogtingslo
 
 # Methods
 
+```{r data}
+harvest <- read_csv("../data/harvest.csv") |>
+  select(-Notes) |> 
+  filter(Year < 2009)
+
+data_all <- read_rds("../data/puffin_clean.rds")
+
+females <- data_all |>
+  filter(sex == "Female") |>
+  filter_out(is.na(bred)) |>
+  select(date, brood.spot, bred, year) |>
+  mutate(year_c = (year - mean(year)) / 10) |> # decades from mean year, for interpretable logit-scale priors
+  drop_na(brood.spot)
+
+harvest <- harvest |> 
+  left_join(
+    females |> 
+      group_by(year) |> 
+      tally(name = "Females"),
+    by = join_by(Year == year))
+```
+
+Between 1989 and 2008, J-KJ inspected `r nrow(data_all)` randomly selected puffins harvested on the islands of Nólsoy from 1989 to 2006, and on Mykines from 2007 and 2008 (@tbl-harvest), when no puffins could be obtained on Nólsoy (@fig-map). Puffins were harvested from July 2nd, with an official end-date of August 8th, although this was not always adhered to and the latest sample in our dataset was harvested August 15th. J-KJ acquired an arbitrary number of puffins (range: `r round(range(harvest[[3]], na.rm = TRUE), 1)`; median: `r round(median(harvest[[3]], na.rm = TRUE), 1)`; @tbl-harvest) from the hunters when they returned to the village. Hunters placed the harvested puffins in a big pile on the ground prior to processing. From one pile per hunting day, J-KJ collected a random sample by closing his eyes when selecting birds. The estimated number of harvested puffins between 1996 and 2008 ranged from `r format(min(harvest[[2]], na.rm = TRUE), big.mark = ",", scientific = FALSE)` (`r harvest$Year[which.min(harvest[[2]])]`) to `r format(max(harvest[[2]], na.rm = TRUE), big.mark = ",", scientific = FALSE)` (`r harvest$Year[which.max(harvest[[2]])]`; @tbl-harvest) but similar counts do not exist for the period between 1989 and 1995.
+
+J-KJ scored the presence or absence of a brood patch before dissecting all individuals to determine their sex starting in 1995. For females, J-KJ determined whether they had ever laid an egg by assessing the oviduct; a straight oviduct indicates that a female never laid an egg, while a 'convoluted' oviduct indicates that a female has laid an egg and therefore is of breeding age [@vanfraneker2004]. For males, it is impossible to determine whether they have bred before. Based on bill characteristics, we could only determine their age up to 4 years [@ausemsVariationFoodAvailability2026] which is generally too young to be of breeding age [@lowtherAtlanticPuffinFratercula2020]. Therefore, we only included females for which their breeding status could be determined in our analyses (n = `r nrow(females)`).
+
+We fitted a Bayesian generalised linear model (glm) with logistic regression [logit link, Bernoulli family; function *brm*, package *brms*; @burknerBrmsPackageBayesian2017] with breeding status (0 = never bred; 1 = has bred) as response variable. We included study year and brood patch presence (0 = absent; 1 = present) with an interaction as covariates. We used weakly informative priors: a normal (0, 1.5) prior on the brood patch presence and year × brood patch presence interaction, a more skeptical normal (0, 1) prior on the year trend, and the default Student-t (3, 0, 2.5) prior on the intercept. We centered year around the mean, and scaled it in decades, so the year prior constrains the plausible per-decade change in breeding probability. We confirmed that these priors implied plausible values using prior predictive checks [*pp_check* with *type = "stat"* and *stat = "mean"*; @burknerBrmsPackageBayesian2017], before fitting the model to the data. We ran six chains, each with 4000 iterations of which 2000 were discarded as warmup, and without thinning.
+
+We assessed Markov Chain Monte Carlo (MCMC) convergence by inspecting trace plots for all parameters [@gabryVisualizationBayesianWorkflow2019], confirming that $\hat{R}$ values were close to 1 [≤ 1.01; @vehtariRankNormalizationFoldingLocalization2021], and that effective sample sizes (bulk/tail ESS) were high for all fixed effects [i.e., \> 100 per chain; @vehtariRankNormalizationFoldingLocalization2021]. We evaluated posterior predictive fit graphically using *pp_check* [@burknerBrmsPackageBayesian2017], comparing the observed distribution of breeding status to the posterior predictive distribution [@gelmanPosteriorPredictiveAssessment1996; @gabryVisualizationBayesianWorkflow2019]. We assessed out-of-sample predictive performance using approximate leave-one-out cross-validation (PSIS-LOO) assuming a good fit if the Pareto *k* value was \< 0.7 for all observations [function *loo*; @burknerBrmsPackageBayesian2017; @vehtariPracticalBayesianModel2017; @vehtariParetoSmoothedImportance2024]. 
+
+As a robustness check, we tested whether brood patch detectability drifted over time within confirmed breeding-age females, with a second GLM with brood patch presence as response variable and year as covariate, including only breeding-age females (n = `r females |> filter(bred == 1) |> drop_na(brood.spot) |> tally() |> pull(n)`). We used the same priors as for the full model, excluding the interaction term. As a second robustness check to confirm that the low sample size (n = `r harvest |> filter(Year == 2007) |> pull(Females)`) in 2007 did not have an undue effect on the overall outcome, we refit the full model excluding 2007.
+
+```{r model-fit}
+#| include: false
+
+priors <- c(
+  prior(normal(0, 1.5), class = "b"), # slopes, incl. brood.spot and interaction
+  prior(normal(0, 1), class = "b", coef = "year_c"), # skeptical prior on the trend
+  prior(student_t(3, 0, 2.5), class = "Intercept")
+)
+
+# prior predictive check before trusting the priors above
+m01_prior <- brm(bred ~ year_c * brood.spot,
+                 data = females,
+                 family = bernoulli(),
+                 prior = priors,
+                 file = "../output/priors.rds",
+                 file_refit = "on_change",,
+                 sample_prior = "only")
+
+pp_prior <- pp_check(m01_prior, type = "stat", stat = "mean")
+ggsave("../figures/prior_pred_check.png", pp_prior, dpi = 500)
+
+m01 <- brm(bred ~ year_c * brood.spot,
+           data = females,
+           family = bernoulli(),
+           prior = priors,
+           seed = 42,
+           iter = 4000,
+           cores = parallel::detectCores() - 1,
+           chains = 6,
+           sample_prior = "yes",
+           file = "../output/m01.rds",
+           file_refit = "on_change",
+           silent = 2,
+           save_pars = save_pars(all = TRUE))
+
+summary(m01)
+pp_model <- pp_check(m01, type = "stat", stat = "mean")
+ggsave("../figures/model_pred_check.png", pp_model, dpi = 500)
+
+loo_m1 <- loo(m01)
+
+mcmc_dat <- bayesplot::mcmc_trace_data(m01)
+mcmc_model <- bayesplot::mcmc_trace(m01)
+ggsave("../figures/mcmc_plot.png", mcmc_model, dpi = 500)
+```
+
+```{r robustness-check1}
+#| include: false
+
+breeders <- females |> 
+  filter(bred == 1) |> 
+  drop_na(brood.spot)
+
+priors2 <- c(
+  prior(normal(0, 1), class = "b", coef = "year_c"),
+  prior(student_t(3, 0, 2.5), class = "Intercept")
+)
+
+m02 <- brm(brood.spot ~ year_c,
+           data = breeders,
+           family = bernoulli(),
+           prior = priors2,
+           seed = 42,
+           iter = 4000,
+           cores = parallel::detectCores() - 1,
+           chains = 6,
+           sample_prior = "yes",
+           file = "../output/m02.rds",
+           file_refit = "on_change",
+           silent = 2,
+           save_pars = save_pars(all = TRUE))
+
+summary(m02)
+pp_model2 <- pp_check(m02, type = "stat", stat = "mean")
+ggsave("../figures/model2_pred_check.png", pp_model2, dpi = 500)
+
+loo_m2 <- loo(m01)
+
+mcmc_dat2 <- bayesplot::mcmc_trace_data(m02)
+mcmc_model2 <- bayesplot::mcmc_trace(m02)
+ggsave("../figures/mcmc_plot2.png", mcmc_model2, dpi = 500)
+```
+
+```{r robustness-check2}
+#| include: false
+
+females_no2007 <- females |> filter(year != 2007)
+
+m01_sens2007 <- brm(bred ~ year_c * brood.spot,
+                     data = females_no2007,
+                     family = bernoulli(),
+                     prior = priors,
+                     seed = 42,
+                     iter = 4000,
+                     cores = parallel::detectCores() - 1,
+                     chains = 6,
+                     sample_prior = "yes",
+                     file = "../output/m01_sens2007.rds",
+                     file_refit = "on_change",
+                     silent = 2,
+                     save_pars = save_pars(all = TRUE))
+
+summary(m01_sens2007)
+pp_model2007 <- pp_check(m01_sens2007, type = "stat", stat = "mean")
+ggsave("../figures/model2007_pred_check.png", pp_model2007, dpi = 500)
+
+loo_m1_sens2007 <- loo(m01_sens2007)
+
+mcmc_dat2007 <- bayesplot::mcmc_trace_data(m01_sens2007)
+mcmc_model2007 <- bayesplot::mcmc_trace(m01_sens2007)
+ggsave("../figures/mcmc_plot2007.png", mcmc_model2007, dpi = 500)
+
+```
+
+# Results
+
+The model passed the validation checks (Appendix 1) with all $\hat{R}$ ≤ 1.001 and high ESS (bulk/tail ESS \> 8,900 of 12,000 post-warmup draws). All Pareto k estimates were \< 0.7 (expected log pointwise predictive density (ELPD) ± standard error (SE) = `r round(loo_m1[[1]][[1]], 2)` ± `r round(loo_m1[[1]][[4]], 2)`, effective parameters ± SE = `r round(loo_m1[[1]][[2]], 2)` ± `r round(loo_m1[[1]][[5]], 2)`). The robustness check models also passed all checks (Appendix 1).
+
+```{r pop-trend}
+# population-averaged (standardised) change in P(bred) across the study period,
+# integrating over the observed brood.spot mix -- stays within the observed year_c
+# range, unlike a naive per-decade extrapolation of the year_c coefficient
+yr_min <- min(females$year_c)
+yr_max <- max(females$year_c)
+
+nd_start <- females |> mutate(year_c = yr_min)
+nd_end   <- females |> mutate(year_c = yr_max)
+
+avg_start <- rowMeans(posterior_epred(m01, newdata = nd_start))
+avg_end   <- rowMeans(posterior_epred(m01, newdata = nd_end))
+pop_trend_diff <- avg_end - avg_start
+
+# odds ratios per decade, on the draw scale (matches the exp(fixef()) convention
+# used in tbl-odds-m1) -- computed directly rather than via hypothesis(), since
+# hypothesis() reports the shifted quantity exp(year_c) - 1 for a one-sided test,
+# not the odds ratio itself
+m01_draws <- as_draws_df(m01)
+or_baseline <- exp(m01_draws$b_year_c)
+or_present  <- exp(m01_draws$b_year_c + m01_draws$`b_year_c:brood.spot`)
+
+hyp_baseline <- hypothesis(m01, "year_c > 0")[[1]]
+hyp_present  <- hypothesis(m01, "year_c + year_c:brood.spot > 0")[[1]]
+```
+
+```{r model2-interpret}
+#| include: false
+
+odds2 <- fixef(m02)[, c("Estimate", "Q2.5", "Q97.5")] |>
+  exp() |>
+  round(2)
+
+# one-sided test: did brood-spot presence decline over time among breeders?
+hypothesis(m02, "year_c < 0")
+```
+
+```{r sens2007-interpret}
+#| include: false
+
+# per-coefficient odds ratios for m01 vs. the 2007-excluded refit, on the same
+# exp(fixef()) convention as tbl-odds1, so the deltas are directly comparable
+# to the numbers in that table
+or_full <- exp(fixef(m01)[, "Estimate"])
+or_sens <- exp(fixef(m01_sens2007)[, "Estimate"])
+or_diff <- or_sens - or_full
+```
+
+The GLM showed an increase in the ratio of females that had bred over time (@fig-marg), with a stronger increase within females without a brood patch than females with a brood patch (@fig-pred1). Averaged across the sample (integrating over the observed proportion of brood patch presence; ), the model-predicted probability of having bred increased from `r sprintf("%.2f", mean(avg_start))` (95% CI: `r sprintf("%.2f", quantile(avg_start, 0.025))`–`r sprintf("%.2f", quantile(avg_start, 0.975))`) in `r min(females$year)` to `r sprintf("%.2f", mean(avg_end))` (95% CI: `r sprintf("%.2f", quantile(avg_end, 0.025))`–`r sprintf("%.2f", quantile(avg_end, 0.975))`) in `r max(females$year)`, an increase of `r sprintf("%.2f", mean(pop_trend_diff))` (95% CI: `r sprintf("%.2f", quantile(pop_trend_diff, 0.025))`–`r sprintf("%.2f", quantile(pop_trend_diff, 0.975))`) over the study period. Breeding odds increased by a factor of `r sprintf("%.2f", mean(or_baseline))` (95% CI: `r sprintf("%.2f", quantile(or_baseline, 0.025))`-`r sprintf("%.2f", quantile(or_baseline, 0.975))`; posterior probability of an increase = `r sprintf("%.1f", hyp_baseline$Post.Prob * 100)`%) per decade in females without a brood patch (the baseline for the model) and `r sprintf("%.2f", mean(or_present))` (95% CI: `r sprintf("%.2f", quantile(or_present, 0.025))`-`r sprintf("%.2f", quantile(or_present, 0.975))`; posterior probability of an increase = `r sprintf("%.1f", hyp_present$Post.Prob * 100)`%) for females with a brood patch (@tbl-odds1).
+
+We found no credible trend in brood patch presence within confirmed breeding-age female (odds ratio `r sprintf("%.2f", odds2[[2]])`/decade; 95% CI [`r sprintf("%.2f", odds2[[4]])`-`r sprintf("%.2f", odds2[[6]])`]; posterior probability = `r sprintf("%.1f", hypothesis(m02, "year_c < 0")[[1]]$Post.Prob * 100)`; @fig-pred2). Removing 2007 did not change the model predictions (Δ odds ratio, full model minus 2007-excluded refit: intercept `r sprintf("%+.2f", or_diff[["Intercept"]])`, year `r sprintf("%+.2f", or_diff[["year_c"]])`, brood patch presence `r sprintf("%+.2f", or_diff[["brood.spot"]])`, interaction `r sprintf("%+.2f", or_diff[["year_c:brood.spot"]])`).
+
+# Discussion
+
+
 ```{r map}
 #| label: fig-map
-#| fig-cap: "Location of the study sites (red dots)."
+#| fig-cap: "Location of the study sites (red dots) in Føroyar."
 #| fig-width: 7
 #| fig-height: 7.1
 
-library(tidyverse)
 library(rnaturalearth)
 library(rnaturalearthhires)
 library(ggrepel)
@@ -122,6 +334,139 @@ map1 <- map1 +
 map1
 
 ggsave("../figures/map1.tiff", width = 7, height = 7 * map1_aspect, dpi = 500)
+```
+
+```{r mod-marg}
+#| label: fig-marg
+#| fig-cap: "Temporal change in the probability of harvesting female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age in Føroyar. The solid line shows the estimate from a Bayesian generalised linear model and the shaded band shows the 95% credible interval. The estimates are marginalised over each study year's observed brood patch composition."
+#| fig-width: 7
+#| fig-height: 5
+
+females_cc <- females |> drop_na(brood.spot)
+epred <- posterior_epred(m01, newdata = females_cc)  # draws x observations
+
+yrs <- sort(unique(females_cc$year))
+draws_by_year <- sapply(yrs, function(y) rowMeans(epred[, females_cc$year == y, drop = FALSE]))
+colnames(draws_by_year) <- yrs
+
+marginal_summary <- as_tibble(draws_by_year) |>
+  pivot_longer(everything(), names_to = "year", values_to = "draw") |>
+  mutate(year = as.numeric(year)) |>
+  group_by(year) |>
+  summarise(Estimate = mean(draw), Q2.5 = quantile(draw, .025), Q97.5 = quantile(draw, .975), .groups = "drop")
+
+observed_overall <- females_cc |>
+  group_by(year) |>
+  summarise(prop_bred = mean(bred), n = n(), .groups = "drop")
+
+puffin_pal <- seabird_palettes$atlanticpuffin
+
+mod_marg <- marginal_summary |>
+  ggplot(aes(x = year)) +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), alpha = 0.15, fill = puffin_pal[5]) +
+  geom_line(aes(y = Estimate), linewidth = 0.75, col = puffin_pal[5]) +
+  geom_point(data = observed_overall, aes(y = prop_bred, size = n), alpha = 0.5, col = puffin_pal[5]) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +
+  labs(x = "Year",
+       y = "Probability of breeding",
+       size = "n")
+
+mod_marg
+
+ggsave("../figures/model_predictions_marginal.tiff", mod_marg, width = 7, height = 5, dpi = 500)
+```
+
+```{r mod-pred}
+#| label: fig-pred1
+#| fig-cap: "Temporal change in the probability of harvesting female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age in Føroyar, with or without brood patches. The solid lines show the estimates from a Bayesian generalised linear model and the shaded band shows the 95% credible intervals."
+#| fig-width: 7
+#| fig-height: 5
+
+newdata <- expand_grid(
+  year = seq(min(females$year), max(females$year), length.out = 100),
+  brood.spot = c(0, 1)
+) |>
+  mutate(year_c = (year - mean(females$year)) / 10)
+
+preds <- fitted(m01, newdata = newdata, re_formula = NA) |>
+  as_tibble() |>
+  bind_cols(newdata) |>
+  mutate(brood.spot = factor(brood.spot, levels = c(0, 1), labels = c("Absent", "Present")))
+
+observed <- females |>
+  drop_na(brood.spot) |>
+  group_by(year, brood.spot) |>
+  summarise(prop_bred = mean(bred), n = n(), .groups = "drop") |>
+  mutate(brood.spot = factor(brood.spot, levels = c(0, 1), labels = c("Absent", "Present")))
+
+puffin_pal <- seabird_palettes$atlanticpuffin
+broodspot_colors <- c("Absent" = puffin_pal[1], "Present" = puffin_pal[4])
+
+mod_pred <- preds |>
+  ggplot(aes(x = year, col = brood.spot, fill = brood.spot)) +
+  geom_ribbon(aes(y = Estimate, ymin = Q2.5, ymax = Q97.5), alpha = 0.15, col = NA) +
+  geom_line(aes(y = Estimate), linewidth = 0.75) +
+  geom_point(data = observed, aes(y = prop_bred, size = n), alpha = 0.5) +
+  scale_color_manual(values = broodspot_colors) +
+  scale_fill_manual(values = broodspot_colors) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +
+  labs(x = "Year",
+       y = "Probability of having bred ever",
+       col = "Brood patch",
+       fill = "Brood patch",
+       size = "n")
+
+mod_pred
+
+ggsave("../figures/model_predictions.tiff", mod_pred, width = 7, height = 5, dpi = 500)
+```
+
+```{r mod-check}
+#| label: fig-pred2
+#| fig-cap: "Temporal change in brood patch presence in female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age harvested in Føroyar. The solid line shows the estimate from a Bayesian generalised linear model and the shaded band shows the 95% credible interval."
+#| fig-width: 7
+#| fig-height: 5
+
+newdata2 <- tibble(year = seq(min(breeders$year), max(breeders$year), length.out = 100)) |>
+  mutate(year_c = (year - mean(females$year)) / 10)
+
+preds2 <- fitted(m02, newdata = newdata2) |> as_tibble() |> bind_cols(newdata2)
+
+observed_broodspot <- breeders |>
+  group_by(year) |>
+  summarise(prop_broodspot = mean(brood.spot), n = n(), .groups = "drop")
+
+mod2_pred <- preds2 |>
+  ggplot(aes(x = year)) +
+  geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), alpha = 0.15, fill = puffin_pal[6]) +
+  geom_line(aes(y = Estimate), linewidth = 0.75, col = puffin_pal[6]) +
+  geom_point(data = observed_broodspot, aes(y = prop_broodspot, size = n), alpha = 0.5, col = puffin_pal[6]) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +
+  labs(x = "Year",
+       y = "Probability of brood spot",
+       size = "n")
+
+mod2_pred
+
+ggsave("../figures/model_broodspot_breeders.tiff", mod2_pred, width = 7, height = 5)
+```
+
+```{r tbl-harvest}
+#| label: tbl-harvest
+#| tbl-cap: "Estimated annual puffin harvest and sample sizes, Nólsoy (1989–2006) and Mykines (2007–2008), Føroyar. Sample sizes are presented for the total sample size and the number of females in the sample."
+
+knitr::kable(harvest)
+```
+
+```{r tbl-odds-m1}
+#| label: tbl-odds1
+#| tbl-cap: "Odds ratios for all fixed effects of the Bayesian generalised linear model testing temporal changes in the breeding status of Atlantic puffins (*Fratercula arctica*) harvest in Føroyar. The model included breeding status (0 = never bred, 1 = has bred) as response variable, and year, brood patch (0 = absent, 1 = present), and their interaction as covariates."
+
+knitr::kable(fixef(m01)[, c("Estimate", "Q2.5", "Q97.5")] |>
+  exp() |>
+  round(2) |>
+  `rownames<-`(c("Intercept", "Year (in decades)", "Brood patch (BP)", "Year: BP")),
+  col.names = c("Estimate", "Lower 95% CI", "Upper 95% CI"))
 ```
 
 # REFERENCES

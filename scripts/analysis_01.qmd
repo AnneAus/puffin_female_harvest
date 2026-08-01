@@ -215,7 +215,7 @@ marginal_summary |>
        title = "Overall probability of breeding over time",
        caption = "Shaded band = 95% credible interval, marginalised over each year's observed brood-spot mix.")
 
-ggsave("../figures/model_predictions_marginal.png", width = 7, height = 5)
+# ggsave("../figures/model_predictions_marginal.png", width = 7, height = 5)
 ```
 
 ```{r model_plot_marginal_v2}
@@ -238,9 +238,7 @@ marginal_summary |>
 ggsave("../figures/model_predictions_marginal_v2.png", width = 7, height = 5)
 ```
 
-Was brood-spot presence *among confirmed breeders* itself changing over time? If so, that
-would suggest the main trend above is partly a detectability artefact rather than a true
-change in breeding rate.
+Was brood-spot presence *among confirmed breeders* itself changing over time? If so, that would suggest the main trend above is partly a detectability artefact rather than a true change in breeding rate.
 
 ```{r model_broodspot_fit}
 breeders <- females |> filter(bred == 1) |> drop_na(brood.spot)
