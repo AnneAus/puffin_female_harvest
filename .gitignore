@@ -4,3 +4,6 @@
 .httr-oauth
 .DS_Store
 .quarto
+.claude
+session-notes
+CLAUDE.md
