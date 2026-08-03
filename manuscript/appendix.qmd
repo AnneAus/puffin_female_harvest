@@ -98,7 +98,8 @@ m01 <- brm(bred ~ year_c * brood.spot,
            save_pars = save_pars(all = TRUE))
 
 pp_model <- pp_check(m01, type = "stat", stat = "mean")
-mcmc_model <- bayesplot::mcmc_trace(m01)
+mcmc_model <- bayesplot::mcmc_trace(m01, regex_pars = "^b_", facet_args = list(ncol = 1))
+loo_m1 <- loo(m01)
 
 priors2 <- c(
   prior(normal(0, 1), class = "b", coef = "year_c"),
@@ -120,7 +121,8 @@ m02 <- brm(brood.spot ~ year_c,
            save_pars = save_pars(all = TRUE))
 
 pp_model2 <- pp_check(m02, type = "stat", stat = "mean")
-mcmc_model2 <- bayesplot::mcmc_trace(m02)
+mcmc_model2 <- bayesplot::mcmc_trace(m02, regex_pars = "^b_", facet_args = list(ncol = 1))
+loo_m2 <- loo(m02)
 
 m01_sens2007 <- brm(bred ~ year_c * brood.spot,
                      data = females_no2007,
@@ -137,8 +139,41 @@ m01_sens2007 <- brm(bred ~ year_c * brood.spot,
                      save_pars = save_pars(all = TRUE))
 
 pp_model2007 <- pp_check(m01_sens2007, type = "stat", stat = "mean")
-mcmc_model2007 <- bayesplot::mcmc_trace(m01_sens2007)
+mcmc_model2007 <- bayesplot::mcmc_trace(m01_sens2007, regex_pars = "^b_", facet_args = list(ncol = 1))
+loo_sens2007 <- loo(m01_sens2007)
 ```
+
+```{r diagnostics-table}
+#| include: false
+
+diag_row <- function(fit, loo_fit, label) {
+  fx <- summary(fit)$fixed
+  tibble(
+    Model = label,
+    `Max Rhat` = round(max(fx$Rhat), 3),
+    `Min Bulk ESS` = round(min(fx$Bulk_ESS)),
+    `Min Tail ESS` = round(min(fx$Tail_ESS)),
+    `ELPD (SE)` = sprintf("%.2f (%.2f)", loo_fit$estimates["elpd_loo", "Estimate"], loo_fit$estimates["elpd_loo", "SE"]),
+    `Eff. params (SE)` = sprintf("%.2f (%.2f)", loo_fit$estimates["p_loo", "Estimate"], loo_fit$estimates["p_loo", "SE"]),
+    `Max Pareto k` = round(max(loo_fit$diagnostics$pareto_k), 2)
+  )
+}
+
+diagnostics_table <- bind_rows(
+  diag_row(m01, loo_m1, "M1: breeding status ~ year x brood patch"),
+  diag_row(m02, loo_m2, "M2: brood patch ~ year (breeders only)"),
+  diag_row(m01_sens2007, loo_sens2007, "M1, 2007 excluded")
+)
+```
+
+```{r tbl-diagnostics}
+#| label: tbl-diagnostics
+#| tbl-cap: "Convergence diagnostics (maximum R-hat and minimum bulk/tail effective sample size across fixed effects) and out-of-sample predictive fit (expected log pointwise predictive density (ELPD), effective number of parameters, and maximum Pareto k from approximate leave-one-out cross-validation) for the three fitted models."
+
+knitr::kable(diagnostics_table)
+```
+
+{{< pagebreak >}}
 
 ```{r fig-pp-prior}
 #| label: fig-pp-prior
@@ -164,9 +199,9 @@ pp_model
 
 ```{r fig-mcmc-model}
 #| label: fig-mcmc-model
-#| fig-cap: "MCMC trace plots for all parameters of the primary model (M1), used to assess chain mixing and convergence."
+#| fig-cap: "MCMC trace plots for all parameters of the primary model (M1), used to assess chain mixing and convergence. Brood.spot = brood patch."
 #| fig-width: 7
-#| fig-height: 7
+#| fig-height: 8
 
 mcmc_model
 ```
@@ -208,9 +243,9 @@ pp_model2007
 
 ```{r fig-mcmc-model2007}
 #| label: fig-mcmc-model2007
-#| fig-cap: "MCMC trace plots for all parameters of the primary model refit excluding the 2007 breeding season."
+#| fig-cap: "MCMC trace plots for all parameters of the primary model refit excluding the 2007 breeding season. Brood.spot = brood patch."
 #| fig-width: 7
-#| fig-height: 7
+#| fig-height: 8
 
 mcmc_model2007
 ```
