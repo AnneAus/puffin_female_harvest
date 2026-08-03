@@ -55,7 +55,7 @@ Ongoing climate change and increasing human-induced environmental change are cau
 
 ## Citation
 
-If you use this code or data, please cite the associated manuscript (details to be added on publication) and/or this repository — see `CITATION.cff` (GitHub's "Cite this repository" button uses this automatically), or the archived Zenodo record: [DOI TBD].
+If you use this code or data, please cite the associated manuscript (details to be added on publication) and/or this repository — see `CITATION.cff` (GitHub's "Cite this repository" button uses this automatically), or the archived Zenodo record: [10.5281/zenodo.21780561](https://doi.org/10.5281/zenodo.21780561).
 
 ## License
 
