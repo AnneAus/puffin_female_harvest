@@ -86,6 +86,8 @@ harvest <- harvest |>
     by = join_by(Year == year))
 ```
 
+Ethics statement: all birds were legally harvested [@fuglaveiduloginLogtingslogUmFuglaveidu1984], and none of the birds were killed on request specially for this study.
+
 Between 1989 and 2008, J-KJ inspected `r nrow(data_all)` randomly selected puffins harvested on the islands of Nólsoy from 1989 to 2006, and on Mykines from 2007 and 2008 (@tbl-harvest), when no puffins could be obtained on Nólsoy (@fig-map). Puffins were harvested from July 2nd, with an official end-date of August 8th, although this was not always adhered to and the latest sample in our dataset was harvested August 15th. J-KJ acquired an arbitrary number of puffins (range: `r round(range(harvest[[3]], na.rm = TRUE), 1)`; median: `r round(median(harvest[[3]], na.rm = TRUE), 1)`; @tbl-harvest) from the hunters when they returned to the village. Hunters placed the harvested puffins in a big pile on the ground prior to processing. From one pile per hunting day, J-KJ collected a random sample by closing his eyes when selecting birds. The estimated number of harvested puffins between 1996 and 2008 ranged from `r format(min(harvest[[2]], na.rm = TRUE), big.mark = ",", scientific = FALSE)` (`r harvest$Year[which.min(harvest[[2]])]`) to `r format(max(harvest[[2]], na.rm = TRUE), big.mark = ",", scientific = FALSE)` (`r harvest$Year[which.max(harvest[[2]])]`; @tbl-harvest) but similar counts do not exist for the period between 1989 and 1995.
 
 J-KJ scored the presence or absence of a brood patch before dissecting all individuals to determine their sex starting in 1995. For females, J-KJ determined whether they had ever laid an egg by assessing the oviduct; a straight oviduct indicates that a female never laid an egg, while a 'convoluted' oviduct indicates that a female has laid an egg and therefore is of breeding age [@vanfraneker2004]. For males, it is impossible to determine whether they have bred before. Based on bill characteristics, we could only determine their age up to 4 years [@ausemsVariationFoodAvailability2026] which is generally too young to be of breeding age [@lowtherAtlanticPuffinFratercula2020]. Therefore, we only included females for which their breeding status could be determined in our analyses (n = `r nrow(females)`). We removed individuals for which breeding state could not be determined (n = `r data_all |> filter(sex == "Female") |> filter(year > 1994) |> filter(is.na(bred)) |> tally() |> pull(n)`) and individuals for which brood patch was not scored (n = `r data_all |> filter(sex == "Female") |> filter(year > 1994) |> filter(is.na(brood.spot)) |> tally()`).
@@ -95,6 +97,8 @@ We fitted a Bayesian generalised linear model (glm) with logistic regression \[l
 We assessed Markov Chain Monte Carlo (MCMC) convergence by inspecting trace plots for all parameters [@gabryVisualizationBayesianWorkflow2019], confirming that $\hat{R}$ values were close to 1 [≤ 1.01; @vehtariRankNormalizationFoldingLocalization2021], and that effective sample sizes (bulk/tail ESS) were high for all fixed effects [i.e., \> 100 per chain; @vehtariRankNormalizationFoldingLocalization2021]. We evaluated posterior predictive fit graphically using *pp_check* [@burknerBrmsPackageBayesian2017], comparing the observed distribution of breeding status to the posterior predictive distribution [@gelmanPosteriorPredictiveAssessment1996; @gabryVisualizationBayesianWorkflow2019]. We assessed out-of-sample predictive performance using approximate leave-one-out cross-validation (PSIS-LOO) assuming a good fit if the Pareto *k* value was \< 0.7 for all observations [function *loo*; @burknerBrmsPackageBayesian2017; @vehtariPracticalBayesianModel2017; @vehtariParetoSmoothedImportance2024].
 
 As a robustness check, we tested whether brood patch detectability drifted over time within confirmed breeding-age females, with a second GLM with brood patch presence as response variable and year as covariate, including only breeding-age females (n = `r females |> filter(bred == 1) |> drop_na(brood.spot) |> tally() |> pull(n)`). We used the same priors as for the full model, excluding the interaction term. As a second robustness check to confirm that the low sample size (n = `r harvest |> filter(Year == 2007) |> pull(Females)`) in 2007 did not have an undue effect on the overall outcome, we refit the full model excluding 2007.
+
+All data and R code is available on github:
 
 ```{r model-fit}
 #| include: false
@@ -279,6 +283,12 @@ Overall, we believe that the harvested sample, although intentionally biased tow
 # Acknowledgements
 
 We would like to thank René Hansen for collecting and sharing the harvest numbers and Trevor MacLaurin for double checking our statistical methods. Most importantly, we would like to thank the hunters who shared puffins for use in this study. Puffins were obtained using private funds and a small contribution from Havstovan - Faroe Marine Research Institute.
+
+# Author contributions
+
+AA: conceptualisation; data curation; formal analysis; methodology; validation; visualisation; writing - original draft
+
+JKJ: conceptualisation; data curation; investigation; methodology; resources; writing - review and editing
 
 # REFERENCES
 
