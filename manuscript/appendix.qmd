@@ -1,0 +1,216 @@
+---
+format:
+  docx:
+    reference-doc: ../MO_reference_doc.docx
+    toc: false
+    number-sections: false
+    fig-dpi: 500
+csl: ../Marine_Ornithology.csl
+bibliography: ../references.bib
+crossref:
+  fig-title: "**Fig. S**"
+  fig-prefix: "Fig. S"
+  tbl-title: "TABLE S"
+  tbl-prefix: "Table S"
+  title-delim: "."
+execute:
+  echo: false
+  warning: false
+  message: false
+editor: source
+---
+
+```{r libraries}
+#| include: false
+
+library(tidyverse)
+library(brms)
+library(seabiRd)
+
+theme_set(theme_classic(base_size = 12))
+```
+
+::: {custom-style="Title"}
+PRE-BREEDING ATLANTIC PUFFINS (FRATERCULA ARCTICA) ARE DISAPPEARING FROM FAROESE COLONIES
+:::
+
+::: {custom-style="Author"}
+ANNE N.M.A. AUSEMS^1^, JENS-KJELD JENSEN^2^
+:::
+
+::: {custom-style="Address"}
+^1^Department of Ecoscience, Aarhus University, Denmark. (anneausems\@ecos.au.dk)\
+^2^Nólsoy, Faroe Islands
+:::
+
+# Appendix 1
+
+```{r data}
+#| include: false
+
+data_all <- read_rds("../data/puffin_clean.rds")
+
+females <- data_all |>
+  filter(sex == "Female") |>
+  filter_out(is.na(bred)) |>
+  select(date, brood.spot, bred, year) |>
+  mutate(year_c = (year - mean(year)) / 10) |> # decades from mean year, for interpretable logit-scale priors
+  drop_na(brood.spot)
+
+breeders <- females |>
+  filter(bred == 1) |>
+  drop_na(brood.spot)
+
+females_no2007 <- females |> filter(year != 2007)
+```
+
+```{r model-fit}
+#| include: false
+
+priors <- c(
+  prior(normal(0, 1.5), class = "b"), # slopes, incl. brood.spot and interaction
+  prior(normal(0, 1), class = "b", coef = "year_c"), # skeptical prior on the trend
+  prior(student_t(3, 0, 2.5), class = "Intercept")
+)
+
+m01_prior <- brm(bred ~ year_c * brood.spot,
+                 data = females,
+                 family = bernoulli(),
+                 prior = priors,
+                 file = "../output/priors.rds",
+                 file_refit = "on_change",
+                 sample_prior = "only")
+
+pp_prior <- pp_check(m01_prior, type = "stat", stat = "mean")
+
+m01 <- brm(bred ~ year_c * brood.spot,
+           data = females,
+           family = bernoulli(),
+           prior = priors,
+           seed = 42,
+           iter = 4000,
+           cores = parallel::detectCores() - 1,
+           chains = 6,
+           sample_prior = "yes",
+           file = "../output/m01.rds",
+           file_refit = "on_change",
+           silent = 2,
+           save_pars = save_pars(all = TRUE))
+
+pp_model <- pp_check(m01, type = "stat", stat = "mean")
+mcmc_model <- bayesplot::mcmc_trace(m01)
+
+priors2 <- c(
+  prior(normal(0, 1), class = "b", coef = "year_c"),
+  prior(student_t(3, 0, 2.5), class = "Intercept")
+)
+
+m02 <- brm(brood.spot ~ year_c,
+           data = breeders,
+           family = bernoulli(),
+           prior = priors2,
+           seed = 42,
+           iter = 4000,
+           cores = parallel::detectCores() - 1,
+           chains = 6,
+           sample_prior = "yes",
+           file = "../output/m02.rds",
+           file_refit = "on_change",
+           silent = 2,
+           save_pars = save_pars(all = TRUE))
+
+pp_model2 <- pp_check(m02, type = "stat", stat = "mean")
+mcmc_model2 <- bayesplot::mcmc_trace(m02)
+
+m01_sens2007 <- brm(bred ~ year_c * brood.spot,
+                     data = females_no2007,
+                     family = bernoulli(),
+                     prior = priors,
+                     seed = 42,
+                     iter = 4000,
+                     cores = parallel::detectCores() - 1,
+                     chains = 6,
+                     sample_prior = "yes",
+                     file = "../output/m01_sens2007.rds",
+                     file_refit = "on_change",
+                     silent = 2,
+                     save_pars = save_pars(all = TRUE))
+
+pp_model2007 <- pp_check(m01_sens2007, type = "stat", stat = "mean")
+mcmc_model2007 <- bayesplot::mcmc_trace(m01_sens2007)
+```
+
+```{r fig-pp-prior}
+#| label: fig-pp-prior
+#| fig-cap: "Prior predictive check for the primary model (M1: breeding status ~ year x brood patch), showing the prior predictive distribution of the mean breeding status (light lines) against the observed mean (dark line), confirming the priors imply plausible values before fitting to the data."
+#| fig-width: 7
+#| fig-height: 5
+
+pp_prior
+```
+
+{{< pagebreak >}}
+
+```{r fig-pp-model}
+#| label: fig-pp-model
+#| fig-cap: "Posterior predictive check for the primary model (M1: breeding status ~ year x brood patch), comparing the observed mean breeding status (dark line) to the posterior predictive distribution (light lines)."
+#| fig-width: 7
+#| fig-height: 5
+
+pp_model
+```
+
+{{< pagebreak >}}
+
+```{r fig-mcmc-model}
+#| label: fig-mcmc-model
+#| fig-cap: "MCMC trace plots for all parameters of the primary model (M1), used to assess chain mixing and convergence."
+#| fig-width: 7
+#| fig-height: 7
+
+mcmc_model
+```
+
+{{< pagebreak >}}
+
+```{r fig-pp-model2}
+#| label: fig-pp-model2
+#| fig-cap: "Posterior predictive check for the robustness-check model (M2: brood patch presence ~ year), fitted to confirmed breeding-age females only."
+#| fig-width: 7
+#| fig-height: 5
+
+pp_model2
+```
+
+{{< pagebreak >}}
+
+```{r fig-mcmc-model2}
+#| label: fig-mcmc-model2
+#| fig-cap: "MCMC trace plots for all parameters of the robustness-check model (M2)."
+#| fig-width: 7
+#| fig-height: 5
+
+mcmc_model2
+```
+
+{{< pagebreak >}}
+
+```{r fig-pp-model2007}
+#| label: fig-pp-model2007
+#| fig-cap: "Posterior predictive check for the primary model refit excluding the 2007 breeding season."
+#| fig-width: 7
+#| fig-height: 5
+
+pp_model2007
+```
+
+{{< pagebreak >}}
+
+```{r fig-mcmc-model2007}
+#| label: fig-mcmc-model2007
+#| fig-cap: "MCMC trace plots for all parameters of the primary model refit excluding the 2007 breeding season."
+#| fig-width: 7
+#| fig-height: 7
+
+mcmc_model2007
+```

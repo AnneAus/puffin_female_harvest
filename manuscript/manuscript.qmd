@@ -28,7 +28,7 @@ theme_set(theme_classic(base_size = 12))
 ```
 
 ::: {custom-style="Title"}
-\[title\]
+Pre-breeding Atlantic puffins (*Fratercula arctica*) are disappearing from Faroese colonies
 :::
 
 ::: {custom-style="Author"}
@@ -42,7 +42,9 @@ ANNE N.M.A. AUSEMS^1^, JENS-KJELD JENSEN^2^
 
 # ABSTRACT
 
-**Key words:**
+Ongoing climate change and increasing human-induced environmental change are causing substantial declines in seabirds. The Atlantic puffin (*Fratercula arctica*; hereafter puffin) is one such species, experiencing declines across it's north Atlantic range. While much of the declines in puffins are indirect, for example due to reduced food availability causing large-scale breeding failure, direct threats such as hunting may push already struggling populations over the edge. At the same time, samples from harvested puffins provide a unique opportunity to dissect and analyse a healthy segment of the population. Here, we analysed 13 years (1995-2008) of data on female puffins harvested in *Føroyar* (Eng. the Faroe Islands) to determine whether the ratio of confirmed breeders (i.e., those females with 'convoluted' oviducts, indicating that had laid an egg at least once in their lifetime) in the harvested sample increased over time. We also scored brood patch as a proxy for ongoing breeding in the sample year, as the harvest was carried out well into the chick rearing period and hormonal brood patches (without active breeding attempt) should have disappeared. We found that the ratio of confirmed breeders increased from approximately 15% in the earlier study years to 78% in 2008, and that within birds without a brood patch, the ratio of confirmed breeders increased as well. Together, we showed that young, pre-breeding birds disappeared from the sample, suggesting a severe lack of recruitment. While the hunt is unlikely to be the main driver of the population decline in *Føroyar*, even reduced harvesting is likely unsustainable under currect conditions.
+
+**Key words:** demographics, seabirds, traditional harvest, recruitment, brood patch, seabird conservation
 
 # INTRODUCTION
 
@@ -50,13 +52,13 @@ Global climate change and increasing human-induced environmental change are caus
 
 Atlantic puffins (*Fratecula arctica*; hereafter 'puffin') are rapidly declining across most of their European range [@birdlifeinternationalSpeciesFactsheetFratercula2021], and they are classified as ‘Vulnerable’ globally and ‘Endangered’ in Europe [@birdlifeinternationalFraterculaArcticaIUCN2018]. Puffin population declines are largely linked to changes in food availability causing declines in breeding success [@fayetLocalPreyShortages2021] and thus recruitment rate leading to increases in the age of the population [@ausemsVariationFoodAvailability2026]. Generally, puffins start breeding when they are between 4 and 5 years, though occasionally they can start at 3 years old and often the first breeding attempt is at a later age [@lowtherAtlanticPuffinFratercula2020]. Annual survival of both immatures and adults is high [@sandvikHighSurvivalImmatures2008], though immature survival may vary between sites and years [see @ashcroftSurvivalRatesBreeding1979], and immatures are highly philopatric [@sandvikHighSurvivalImmatures2008].
 
-In Føroyar (Eng. Faroe Islands; @fig-map), harvesting puffins is a long-stranding, culturally important tradition, where hunters catch flying puffins from set locations on land using a special made net. Puffins are a widespread species in the islands, with an estimated 550,000 breeding pairs in approximately 100 colonies [@jensenListBirdsSeen2005; @hammerFaeroskTraekfugleatlasFaroese2014]. However, as in other areas, their population shows observed, but unquantified, declines in Føroyar. Overharvesting has long been understood to negatively affect the local population [@jensenTraditionsPuffinFowling2020], and, on Nólsoy (@fig-map), the harvest was voluntarily halted in 2009 until the population was deemed stable enough in 2021 to sustain limited harvesting [@ausemsVariationFoodAvailability2026].
+In *Føroyar* (Eng. Faroe Islands; @fig-map), harvesting puffins is a long-stranding, culturally important tradition, where hunters catch flying puffins from set locations on land using a special made net. Puffins are a widespread species in the islands, with an estimated 550,000 breeding pairs in approximately 100 colonies [@jensenListBirdsSeen2005; @hammerFaeroskTraekfugleatlasFaroese2014]. However, as in other areas, their population shows observed, but unquantified, declines in *Føroyar*. Overharvesting has long been understood to negatively affect the local population [@jensenTraditionsPuffinFowling2020], and, on Nólsoy (@fig-map), the harvest was voluntarily halted in 2009 until the population was deemed stable enough in 2021 to sustain limited harvesting [@ausemsVariationFoodAvailability2026].
 
 Puffin hunters, or fowlers, follow a set of rules, intended to ensure only young, prospecting birds are caught and catching breeding adults is avoided [@jensenPuffinFowlingaFowling2010]. Puffin harvesting is restricted to the chick-rearing period as this makes it easier to distinguish breeding adults and prospecting juveniles [@jensenPuffinFowlingaFowling2010]. During the breeding season, puffins take part in 'wheeling-flight', where large groups of birds fly in circles or figure-8's over the colony and surrounding water [@lowtherAtlanticPuffinFratercula2020]. It is assumed that only prospecting birds take part in this behaviour, while breeding adults will either be identifiable by them carrying fish to their nest or directly heading back to sea to collect more food for the chick [@jensenPuffinFowlingaFowling2010]. Puffins do not necessarily display this behaviour every day, rather they come to the colony on specific *landkomudagur* when weather conditions are favourable, which are the preferred hunting days. Hunters only trap birds taking part in the wheeling-flight behaviour. In addition, if a bird with wet bill and cheeks is caught, it is released again, as that is a sign of a bird having just delivered fish to its young.
 
 However, ongoing global climate change and anthropogenic impacts have altered puffin breeding phenology and propensity. In northern latitudes, puffins are breeding later [@burrLaterHigherLatitudes2016] in response to environmental conditions [@durantRegimeShiftsBreeding2004]. Furthermore, birds are forced to forage further offshore to find sufficient food, leading to increases in breeding failures [@fayetLocalPreyShortages2021]. Together, these changes may affect the efficacy of the self-imposed rules; non-incubating partners and failed breeders may take part in the 'wheeling-flight' behaviour without showing the tell-tale signs of being of breeding age.
 
-Using a 20-year dataset on legally harvested puffins [@fuglaveiduloginLogtingslogUmFuglaveidu1984], we tested whether adults of breeding age were harvested. We hypothesise that, as the overall age of the population is increasing and the proportion of young (i.e., \<4 calendar years) is declining [@ausemsVariationFoodAvailability2026], the ratio of adults of breeding age increased over the study period. Secondly, we tested whether breeding propensity changed over time by assessing brood patch presence in the sample. Brood patch formation is induced by hormones before the breeding season [@jonesIncubationPatchBirds1971] but it quickly disappears when a bird is not incubating an egg [@baileyIncubationPatchPasserine1952]. While the presence of a brood patch can be a misleading sign of breeding status [@tranquillaReliabilityBroodPatches2003], we assumed that, at the time of the puffin hunt, prospecting and failed breeders would have refeathered their brood patch while actively incubating birds still retained theirs. We predicted that birds of breeding age would be less likely to have a brood patch later in the study period, indicating increased breeding failures or an increase in birds foregoing breeding.
+Using a 20-year dataset on legally harvested puffins [@fuglaveiduloginLogtingslogUmFuglaveidu1984], we tested whether adults of breeding age were harvested. We hypothesise that, as the overall age of the population is increasing and the proportion of young (i.e., \<4 calendar years) is declining [@ausemsVariationFoodAvailability2026], the ratio of adults of breeding age in the sample increased over the study period. Secondly, we tested whether breeding propensity changed over time by assessing brood patch presence in the sample. Brood patch formation is induced by hormones before the breeding season [@jonesIncubationPatchBirds1971] but it quickly disappears when a bird is not incubating an egg [@baileyIncubationPatchPasserine1952]. While the presence of a brood patch can be a misleading sign of breeding status [@tranquillaReliabilityBroodPatches2003], we assumed that, at the time of the puffin hunt, prospecting and failed breeders would have refeathered their brood patch while actively incubating birds still retained theirs. We predicted that birds of breeding age would be less likely to have a brood patch later in the study period, indicating increased breeding failures or an increase in birds foregoing breeding.
 
 # Methods
 
@@ -266,15 +268,47 @@ We found no credible trend in brood patch presence within confirmed breeding-age
 
 # Discussion
 
-Our results show that the self-imposed rules were reasonably effective early in the study period when approximately 15-30% of the female harvest were birds of confirmed breeding age (@tbl-harvest). However, in the later years leading up to the suspension of the harvest, the number of birds of confirmed breeding age steeply increased to a peak of 78% (@tbl-harvest). Furthermore, by including brood patch presence in the model, we showed that 1) bird of breeding age are not more or less likely to attempt breeding in a given year, and 2) within the group of birds without a brood patch, birds of breeding age are more prevalent (@fig-marg-bar). Together, this indicates that the group of young birds is disappearing from the sample, rather than brood patch detectability changing in birds of breeding age. This is in line with our previous observations that the age of the population is increasing [@ausemsVariationFoodAvailability2026].
+Our results show that the self-imposed rules were reasonably effective early in the study period when approximately 15-30% of the female harvest were birds of confirmed breeding age (@tbl-harvest). However, in the later years leading up to the suspension of the harvest, the number of birds of confirmed breeding age steeply increased to a peak of 78% (@tbl-harvest). Furthermore, by including brood patch presence in the model, we showed that 1) bird of breeding age are not more or less likely to attempt breeding in a given year, and 2) within the group of birds without a brood patch, birds of breeding age are more prevalent (@fig-marg-bar). Together, this indicates that the group of non-breeding birds is disappearing from the sample, rather than brood patch detectability changing in birds of breeding age.
 
-landkomudagur - days that young birds & adults that failed come to the shore, other days only the birds that need to be there come to shore (i.e., the breeders)
+While our previous work [@ausemsVariationFoodAvailability2026] showed a clear disappearance of the younger birds from the sample, we were not able to age individuals past 4 calendar years. Our current study only includes female birds, as we cannot confirm breeding status in males [@vanfraneker2004], but considering the strong pair bond and the fact that males tend to start breeding at a slightly earlier age [@ashcroftSurvivalRatesBreeding1979], we believe our results reflect the state of the entire population. Combined, both studies [this study and @ausemsVariationFoodAvailability2026] strongly suggest that recruitment rate is insufficient [@milesDeclineAtlanticPuffin2015], and young birds are disappearing.
 
-failed breeders will also come to shore to do some maintenance in the nest and socialise
+Besides the absence of younger birds, older, breeding-age birds may be more likely to be caught as breeding success declining in much of the north Atlantic range [@milesDeclineAtlanticPuffin2015; @fayetLocalPreyShortages2021]. Failed breeders often remain in the area, joining the prospecting birds in the 'wheeling-flight' behaviour [@lowtherAtlanticPuffinFratercula2020], thus increasing the likelihood of being captured. With increased food shortages due to climate change and anthropogenic pressures [@fayetLocalPreyShortages2021], more breeding attempts fail. Secondly, puffin phenology is affected by environmental conditions [@durantRegimeShiftsBreeding2004], with puffins breeding later in more recent years [@majorContrastingPhenologicalDemographic2021]. Therefore, the hunting season may start to overlap with the incubation period, when the off-duty parent may join the 'wheeling-flight' behaviour, rather than purely the chick-rearing period when both parents are on duty.
+
+Overall, we believe that the harvested sample, although intentionally biased towards younger birds, represents an ongoing trend in the whole Faroese, and potentially north Atlantic, population of insufficient recruitment in puffins causing an aging effect in the overall population [@milesDeclineAtlanticPuffin2015; @fayetLocalPreyShortages2021; @ausemsVariationFoodAvailability2026]. While we do not think the traditional harvest is the main driver behind the population collapse in *Føroyar*, as this is most likely caused by ongoing climate change and food shortages [@ausemsVariationFoodAvailability2026; @fayetLocalPreyShortages2021; @milesDeclineAtlanticPuffin2015], it may push an already struggling population over the edge [@johnsonRegionalDemographyIcelandic2024]. In fact, in Iceland, where a similar hunting tradition exists, even greatly reduced harvesting is deemed unsustainable in current conditions [@johnson2024icelandic].
+
+# Acknowledgements
+
+We would like to thank René Hansen for collecting and sharing the harvest numbers and Trevor MacLaurin for double checking our statistical methods. Most importantly, we would like to thank the hunters who shared puffins for use in this study. Puffins were obtained using private funds and a small contribution from Havstovan - Faroe Marine Research Institute.
+
+# REFERENCES
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+
+```{r fig-captions}
+#| include: false
+
+cap_map <- "Location of the study sites (red dots) in Føroyar."
+cap_marg_bar <- "Temporal change in the probability of harvesting female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age in Føroyar. Bars show the observed percentage of breeding females per year. The solid line shows the estimate from a Bayesian generalised linear model and the shaded band shows the 95% credible interval. The estimates are marginalised over each study year's observed brood patch composition. The vertical bars show the percentage of females of confirmed breeding age in the sample."
+cap_pred1 <- "Temporal change in the probability of harvesting female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age in Føroyar, with or without brood patches. The solid lines show the estimates from a Bayesian generalised linear model and the shaded band shows the 95% credible intervals."
+cap_pred2 <- "Temporal change in brood patch presence in female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age harvested in Føroyar. The solid line shows the estimate from a Bayesian generalised linear model and the shaded band shows the 95% credible interval."
+```
+
+Fig. 1. `r cap_map`
+
+Fig. 2. `r cap_marg_bar`
+
+Fig. 3. `r cap_pred1`
+
+Fig. 4. `r cap_pred2`
+
+{{< pagebreak >}}
 
 ```{r map}
 #| label: fig-map
-#| fig-cap: "Location of the study sites (red dots) in Føroyar."
+#| fig-cap: ""
 #| fig-width: 7
 #| fig-height: 7.1
 
@@ -306,20 +340,20 @@ map1 <- ggplot(data = faroe_coastline) +
   geom_point(aes(x = lon, y = lat),
              data = colonies,
              size = 3, col = "red") +
-  geom_text_repel(aes(x = lon, y = lat, 
+  geom_text_repel(aes(x = lon, y = lat,
                       label = colony, segment.color = I(seg_col)),
                   size = 5,
                   data = colonies,
                   nudge_y = c(0, -0.02),
                   nudge_x = c(0.17, 0)) +
-  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true",
         pad_x = unit(0.15, "in"), pad_y = unit(0.25, "in"),
-        height = unit(0.5, "in"), width = unit(0.4, "in"), 
-        style = ggspatial::north_arrow_orienteering(text_size = 15, 
+        height = unit(0.5, "in"), width = unit(0.4, "in"),
+        style = ggspatial::north_arrow_orienteering(text_size = 15,
                                                     text_face = "bold")) +
   labs(x = "Longitude (Decimal Degrees)",
        y = "Latitude (Decimal Degrees)",
-       caption = "© OpenStreetMap contributors, ODbL 1.0") 
+       caption = "© OpenStreetMap contributors, ODbL 1.0")
 
 inset <- ggplot(data = world) +
   geom_sf(col = "black", fill = NA) +
@@ -343,12 +377,14 @@ map1
 ggsave("../figures/map1.tiff", width = 7, height = 7 * map1_aspect, dpi = 500)
 ```
 
+{{< pagebreak >}}
+
 ```{r mod-marg-bar}
 #| label: fig-marg-bar
-#| fig-cap: "Temporal change in the probability of harvesting female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age in Føroyar. Bars show the observed percentage of breeding females per year. The solid line shows the estimate from a Bayesian generalised linear model and the shaded band shows the 95% credible interval. The estimates are marginalised over each study year's observed brood patch composition. The vertical bars show the percentage of females of confirmed breeding age in the sample."
+#| fig-cap: ""
 #| fig-width: 7
 #| fig-height: 5
- 
+
 females_cc <- females |> drop_na(brood.spot)
 epred <- posterior_epred(m01, newdata = females_cc)  # draws x observations
 
@@ -382,9 +418,11 @@ mod_marg_bar
 ggsave("../figures/model_predictions_marginal_bar.tiff", mod_marg_bar, width = 7, height = 5, dpi = 500)
 ```
 
+{{< pagebreak >}}
+
 ```{r mod-pred}
 #| label: fig-pred1
-#| fig-cap: "Temporal change in the probability of harvesting female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age in Føroyar, with or without brood patches. The solid lines show the estimates from a Bayesian generalised linear model and the shaded band shows the 95% credible intervals."
+#| fig-cap: ""
 #| fig-width: 7
 #| fig-height: 5
 
@@ -427,9 +465,11 @@ mod_pred
 ggsave("../figures/model_predictions.tiff", mod_pred, width = 7, height = 5, dpi = 500)
 ```
 
+{{< pagebreak >}}
+
 ```{r mod-check}
 #| label: fig-pred2
-#| fig-cap: "Temporal change in brood patch presence in female Atlantic puffins (*Fratercula arctica*) of confirmed breeding age harvested in Føroyar. The solid line shows the estimate from a Bayesian generalised linear model and the shaded band shows the 95% credible interval."
+#| fig-cap: ""
 #| fig-width: 7
 #| fig-height: 5
 
@@ -457,12 +497,16 @@ mod2_pred
 ggsave("../figures/model_broodspot_breeders.tiff", mod2_pred, width = 7, height = 5)
 ```
 
+{{< pagebreak >}}
+
 ```{r tbl-harvest}
 #| label: tbl-harvest
 #| tbl-cap: "Estimated annual puffin harvest and sample sizes, Nólsoy (1989–2006) and Mykines (2007–2008), Føroyar. Sample sizes are presented for the total sample size and the number of females in the sample. The percentage of females that had bred is shown as % (n)."
 
 knitr::kable(harvest)
 ```
+
+{{< pagebreak >}}
 
 ```{r tbl-odds-m1}
 #| label: tbl-odds1
@@ -474,5 +518,3 @@ knitr::kable(fixef(m01)[, c("Estimate", "Q2.5", "Q97.5")] |>
   `rownames<-`(c("Intercept", "Year (in decades)", "Brood patch (BP)", "Year: BP")),
   col.names = c("Estimate", "Lower 95% CI", "Upper 95% CI"))
 ```
-
-# REFERENCES
