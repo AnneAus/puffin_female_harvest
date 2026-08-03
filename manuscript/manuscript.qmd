@@ -98,8 +98,6 @@ We assessed Markov Chain Monte Carlo (MCMC) convergence by inspecting trace plot
 
 As a robustness check, we tested whether brood patch detectability drifted over time within confirmed breeding-age females, with a second GLM with brood patch presence as response variable and year as covariate, including only breeding-age females (n = `r females |> filter(bred == 1) |> drop_na(brood.spot) |> tally() |> pull(n)`). We used the same priors as for the full model, excluding the interaction term. As a second robustness check to confirm that the low sample size (n = `r harvest |> filter(Year == 2007) |> pull(Females)`) in 2007 did not have an undue effect on the overall outcome, we refit the full model excluding 2007.
 
-All data and R code is available on github:
-
 ```{r model-fit}
 #| include: false
 
@@ -289,6 +287,10 @@ We would like to thank René Hansen for collecting and sharing the harvest numbe
 AA: conceptualisation; data curation; formal analysis; methodology; validation; visualisation; writing - original draft
 
 JKJ: conceptualisation; data curation; investigation; methodology; resources; writing - review and editing
+
+# Data and code availability
+
+Data and code for all analyses are available at <https://github.com/AnneAus/puffin_female_harvest>, archived at Zenodo: \[DOI TBD\].
 
 # REFERENCES
 

@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite it as below."
+title: "puffin_female_harvest: code and data for 'Pre-breeding Atlantic puffins (Fratercula arctica) are disappearing from Faroese colonies'"
+type: software
+authors:
+  - family-names: "Ausems"
+    given-names: "Anne N.M.A."
+    affiliation: "Department of Ecoscience, Aarhus University, Denmark"
+  - family-names: "Jensen"
+    given-names: "Jens-Kjeld"
+    affiliation: "Nólsoy, Faroe Islands"
+repository-code: "https://github.com/AnneAus/puffin_female_harvest"
+license: MIT
+keywords:
+  - demographics
+  - seabirds
+  - traditional harvest
+  - recruitment
+  - brood patch
+  - seabird conservation
