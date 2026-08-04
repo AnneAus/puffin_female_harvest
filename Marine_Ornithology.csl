@@ -1853,7 +1853,10 @@
       <else-if variable="URL">
         <group delimiter=" ">
           <choose>
-            <if match="none" variable="issued status">
+            <if variable="accessed">
+              <!-- Marine Ornithology deviation from strict APA7: always show a retrieval date
+                   for URL sources when an `accessed`/`urldate` value is present, not just
+                   for sources lacking a fixed publication date. -->
               <text term="retrieved" text-case="capitalize-first"/>
               <group delimiter=", ">
                 <date form="text" variable="accessed"/>
