@@ -10,7 +10,7 @@ bibliography: ../references.bib
 crossref:
   fig-title: "**Fig. S**"
   fig-prefix: "Fig. S"
-  tbl-title: "TABLE S"
+  tbl-title: "Table S"
   tbl-prefix: "Table S"
   title-delim: "."
 execute:
@@ -30,25 +30,12 @@ library(seabiRd)
 theme_set(theme_classic(base_size = 12))
 ```
 
-::: {custom-style="Title"}
-PRE-BREEDING ATLANTIC PUFFINS (*FRATERCULA ARCTICA*) ARE DISAPPEARING FROM FAROESE COLONIES
-:::
-
-::: {custom-style="Author"}
-ANNE N.M.A. AUSEMS^1^, JENS-KJELD JENSEN^2^
-:::
-
-::: {custom-style="Address"}
-^1^Department of Ecoscience, Aarhus University, Denmark. (anneausems\@ecos.au.dk)\
-^2^Nólsoy, Faroe Islands
-:::
-
-# Appendix 1
+# Appendix
 
 ```{r data}
 #| include: false
 
-data_all <- read_rds("../data/puffin_clean.rds")
+data_all <- read_rds("../data/data.rds")
 
 females <- data_all |>
   filter(sex == "Female") |>
@@ -62,6 +49,9 @@ breeders <- females |>
   drop_na(brood.spot)
 
 females_no2007 <- females |> filter(year != 2007)
+
+# Nólsoy only: all Mykines samples are from 2007 and 2008 (see manuscript)
+females_nolsoy <- females |> filter(!year %in% c(2007, 2008))
 ```
 
 ```{r model-fit}
@@ -141,6 +131,24 @@ m01_sens2007 <- brm(bred ~ year_c * brood.spot,
 pp_model2007 <- pp_check(m01_sens2007, type = "stat", stat = "mean")
 mcmc_model2007 <- bayesplot::mcmc_trace(m01_sens2007, regex_pars = "^b_", facet_args = list(ncol = 1))
 loo_sens2007 <- loo(m01_sens2007)
+
+m01_sens_mykines <- brm(bred ~ year_c * brood.spot,
+                        data = females_nolsoy,
+                        family = bernoulli(),
+                        prior = priors,
+                        seed = 42,
+                        iter = 4000,
+                        cores = parallel::detectCores() - 1,
+                        chains = 6,
+                        sample_prior = "yes",
+                        file = "../output/m01_sens_mykines.rds",
+                        file_refit = "on_change",
+                        silent = 2,
+                        save_pars = save_pars(all = TRUE))
+
+pp_model_mykines <- pp_check(m01_sens_mykines, type = "stat", stat = "mean")
+mcmc_model_mykines <- bayesplot::mcmc_trace(m01_sens_mykines, regex_pars = "^b_", facet_args = list(ncol = 1))
+loo_sens_mykines <- loo(m01_sens_mykines)
 ```
 
 ```{r diagnostics-table}
@@ -150,27 +158,28 @@ diag_row <- function(fit, loo_fit, label) {
   fx <- summary(fit)$fixed
   tibble(
     Model = label,
-    `Max Rhat` = round(max(fx$Rhat), 3),
-    `Min Bulk ESS` = round(min(fx$Bulk_ESS)),
-    `Min Tail ESS` = round(min(fx$Tail_ESS)),
+    `Max $\\hat{R}$` = round(max(fx$Rhat), 3),
+    `Min Bulk ESS` = format(round(min(fx$Bulk_ESS)), big.mark = ","),
+    `Min Tail ESS` = format(round(min(fx$Tail_ESS)), big.mark = ","),
     `ELPD (SE)` = sprintf("%.2f (%.2f)", loo_fit$estimates["elpd_loo", "Estimate"], loo_fit$estimates["elpd_loo", "SE"]),
     `Eff. params (SE)` = sprintf("%.2f (%.2f)", loo_fit$estimates["p_loo", "Estimate"], loo_fit$estimates["p_loo", "SE"]),
-    `Max Pareto k` = round(max(loo_fit$diagnostics$pareto_k), 2)
+    `Max Pareto *k*` = round(max(loo_fit$diagnostics$pareto_k), 2)
   )
 }
 
 diagnostics_table <- bind_rows(
   diag_row(m01, loo_m1, "M1: breeding status ~ year x brood patch"),
   diag_row(m02, loo_m2, "M2: brood patch ~ year (breeders only)"),
-  diag_row(m01_sens2007, loo_sens2007, "M1, 2007 excluded")
+  diag_row(m01_sens2007, loo_sens2007, "M1, 2007 excluded"),
+  diag_row(m01_sens_mykines, loo_sens_mykines, "M1, Mykines (2007–2008) excluded")
 )
 ```
 
 ```{r tbl-diagnostics}
 #| label: tbl-diagnostics
-#| tbl-cap: "Convergence diagnostics (maximum R-hat and minimum bulk/tail effective sample size across fixed effects) and out-of-sample predictive fit (expected log pointwise predictive density (ELPD), effective number of parameters, and maximum Pareto k from approximate leave-one-out cross-validation) for the three fitted models."
+#| tbl-cap: "Convergence diagnostics (maximum $\\hat{R}$ and minimum bulk/tail effective sample size across fixed effects) and out-of-sample predictive fit (expected log pointwise predictive density (ELPD), effective number of parameters, and maximum Pareto *k* from approximate leave-one-out cross-validation) for the four fitted models."
 
-knitr::kable(diagnostics_table)
+knitr::kable(diagnostics_table, align = c("l", rep("r", 6)))
 ```
 
 {{< pagebreak >}}
@@ -248,4 +257,26 @@ pp_model2007
 #| fig-height: 8
 
 mcmc_model2007
+```
+
+{{< pagebreak >}}
+
+```{r fig-pp-model-mykines}
+#| label: fig-pp-model-mykines
+#| fig-cap: "Posterior predictive check for the primary model refit excluding the individuals collected on Mykines (2007 and 2008 breeding seasons)."
+#| fig-width: 7
+#| fig-height: 5
+
+pp_model_mykines
+```
+
+{{< pagebreak >}}
+
+```{r fig-mcmc-model-mykines}
+#| label: fig-mcmc-model-mykines
+#| fig-cap: "MCMC trace plots for all parameters of the primary model refit excluding the individuals collected on Mykines (2007 and 2008 breeding seasons). Brood.spot = brood patch."
+#| fig-width: 7
+#| fig-height: 8
+
+mcmc_model_mykines
 ```
