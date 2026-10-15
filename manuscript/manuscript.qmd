@@ -409,7 +409,7 @@ Conceptualization: AA, JKJ. Data curation: AA, JKJ. Formal analysis: AA. Investi
 
 # Data and code availability
 
-Data and code for all analyses are available at <https://github.com/AnneAus/puffin_female_harvest>, archived at Zenodo: <https://doi.org/10.5281/zenodo.21780561> [@ausemsPuffin_female_harvestCodeData2026].
+Data and code for all analyses are available at <https://github.com/AnneAus/puffin_female_harvest>, archived at Zenodo: <https://doi.org/10.5281/zenodo.23393736> [@ausemsPuffin_female_harvestCodeData2026].
 
 # REFERENCES
 
