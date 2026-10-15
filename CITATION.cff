@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite it as below."
-title: "puffin_female_harvest: code and data for 'Pre-breeding Atlantic puffins (Fratercula arctica) are disappearing from Faroese colonies'"
+title: "puffin_female_harvest: code and data for 'Pre-breeding Atlantic Puffins Fratercula arctica are disappearing from Faroese colonies'"
 type: software
 authors:
   - family-names: "Ausems"
@@ -10,11 +10,12 @@ authors:
     given-names: "Jens-Kjeld"
     affiliation: "Nólsoy, Faroe Islands"
 repository-code: "https://github.com/AnneAus/puffin_female_harvest"
-version: "1.0.0"
+version: "1.1.0"
+date-released: "2026-10-15"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.21780561"
-    description: "Archived snapshot of the code and data (v1.0.0)."
+    value: "10.5281/zenodo.21780560"
+    description: "Zenodo concept DOI; always resolves to the latest archived version."
 license: MIT
 keywords:
   - demographics
