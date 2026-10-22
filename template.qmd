@@ -60,7 +60,7 @@ and (3) five to seven key words. Short notes may omit headings
 entirely.
 -->
 
-::: {custom-style="AbstractHeading"}
+::: {custom-style="Abstract Heading"}
 Abstract
 :::
 

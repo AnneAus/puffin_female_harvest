@@ -71,6 +71,7 @@ m01_prior <- brm(bred ~ year_c * brood.spot,
                  file_refit = "on_change",
                  sample_prior = "only")
 
+set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
 pp_prior <- pp_check(m01_prior, type = "stat", stat = "mean")
 
 m01 <- brm(bred ~ year_c * brood.spot,
@@ -87,6 +88,7 @@ m01 <- brm(bred ~ year_c * brood.spot,
            silent = 2,
            save_pars = save_pars(all = TRUE))
 
+set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
 pp_model <- pp_check(m01, type = "stat", stat = "mean")
 mcmc_model <- bayesplot::mcmc_trace(m01, regex_pars = "^b_", facet_args = list(ncol = 1))
 loo_m1 <- loo(m01)
@@ -110,6 +112,7 @@ m02 <- brm(brood.spot ~ year_c,
            silent = 2,
            save_pars = save_pars(all = TRUE))
 
+set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
 pp_model2 <- pp_check(m02, type = "stat", stat = "mean")
 mcmc_model2 <- bayesplot::mcmc_trace(m02, regex_pars = "^b_", facet_args = list(ncol = 1))
 loo_m2 <- loo(m02)
@@ -128,6 +131,7 @@ m01_sens2007 <- brm(bred ~ year_c * brood.spot,
                      silent = 2,
                      save_pars = save_pars(all = TRUE))
 
+set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
 pp_model2007 <- pp_check(m01_sens2007, type = "stat", stat = "mean")
 mcmc_model2007 <- bayesplot::mcmc_trace(m01_sens2007, regex_pars = "^b_", facet_args = list(ncol = 1))
 loo_sens2007 <- loo(m01_sens2007)
@@ -146,6 +150,7 @@ m01_sens_mykines <- brm(bred ~ year_c * brood.spot,
                         silent = 2,
                         save_pars = save_pars(all = TRUE))
 
+set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
 pp_model_mykines <- pp_check(m01_sens_mykines, type = "stat", stat = "mean")
 mcmc_model_mykines <- bayesplot::mcmc_trace(m01_sens_mykines, regex_pars = "^b_", facet_args = list(ncol = 1))
 loo_sens_mykines <- loo(m01_sens_mykines)

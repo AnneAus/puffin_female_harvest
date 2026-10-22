@@ -13,6 +13,9 @@
 # style, but a bottom border on that style would also box every figure, since
 # Quarto wraps figures and tables in a layout table with the same style).
 #
+# It also puts an empty line above and below each heading (see the section near
+# the end), as the Marine Ornithology editor laid them out.
+#
 # Optionally pass the docx path: Rscript bold_fig_captions.R path/to/file.docx
 library(xml2)
 
@@ -242,6 +245,58 @@ for (tbl in data_tbls) {
   }
 }
 
+# --- Blank line before and after each heading (editor's layout) ---
+# The editor wants an actual empty line above and below each heading rather
+# than paragraph spacing: zero the heading's own spacing and the space after
+# the paragraph above it, and put an empty Body Text paragraph on either side.
+# No blank line above a heading that starts the document. Neighbours that are
+# already empty paragraphs are left alone, so running this twice is harmless.
+is_empty_para <- function(node) {
+  !inherits(node, "xml_missing") && xml_name(node) == "p" &&
+    length(xml_find_all(node, ".//w:t", ns)) == 0 &&
+    length(xml_find_all(node, ".//w:drawing", ns)) == 0
+}
+set_spacing <- function(p, ...) {
+  ppr <- xml_find_first(p, "./w:pPr", ns)
+  if (is.na(ppr)) ppr <- xml_add_child(p, "w:pPr", .where = 0)
+  sp <- xml_find_first(ppr, "./w:spacing", ns)
+  if (is.na(sp)) {
+    # insert in schema order, after the elements that precede spacing
+    rank <- match(xml_name(xml_children(ppr)), ppr_order, nomatch = length(ppr_order))
+    pos <- sum(rank < match("spacing", ppr_order))
+    sp <- xml_add_child(ppr, "w:spacing", .where = pos)
+  }
+  vals <- list(...)
+  for (a in names(vals)) xml_set_attr(sp, paste0("w:", a), vals[[a]])
+}
+add_blank <- function(p, where) {
+  blank <- xml_add_sibling(p, "w:p", .where = where)
+  ppr <- xml_add_child(blank, "w:pPr")
+  xml_add_child(ppr, "w:pStyle", "w:val" = "BodyText")
+  xml_add_child(ppr, "w:keepNext")  # keep the blank lines with the heading
+  xml_add_child(ppr, "w:spacing", "w:after" = "0")
+}
+
+heading_paras <- xml_find_all(
+  doc,
+  ".//w:body/w:p[w:pPr/w:pStyle[@w:val='Heading1' or @w:val='AbstractHeading']]",
+  ns
+)
+for (h in heading_paras) {
+  set_spacing(h, before = "0", after = "0")
+  # skip the bookmarks Pandoc puts around headings
+  prev <- xml_find_first(h, "./preceding-sibling::*[not(self::w:bookmarkStart or self::w:bookmarkEnd)][1]", ns)
+  if (!inherits(prev, "xml_missing") && xml_name(prev) == "p" &&
+      !is_empty_para(prev)) {
+    set_spacing(prev, after = "0")
+    add_blank(h, "before")
+  } else if (!inherits(prev, "xml_missing") && xml_name(prev) != "p") {
+    add_blank(h, "before")  # e.g. a table directly above the heading
+  }
+  nxt <- xml_find_first(h, "./following-sibling::*[not(self::w:bookmarkStart or self::w:bookmarkEnd)][1]", ns)
+  if (!is_empty_para(nxt)) add_blank(h, "after")
+}
+
 write_xml(doc, doc_path, options = "as_xml")  # no pretty-printing
 
 out_zip <- tempfile(fileext = ".docx")
@@ -257,5 +312,6 @@ unlink(tmp_dir, recursive = TRUE)
 unlink(out_zip)
 
 cat("Bolded 'Fig. N.' prefixes in", length(caption_paras), "figure caption(s).\n")
+cat("Added blank lines around", length(heading_paras), "heading(s).\n")
 cat("Split", n_tbl_captions, "table label(s) onto their own line;",
     "added bottom rules to", length(data_tbls), "table(s).\n")
