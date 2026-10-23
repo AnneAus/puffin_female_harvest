@@ -42,7 +42,7 @@ ANNE N.M.A. AUSEMS^1^, & JENS-KJELD JENSEN^2^
 :::
 
 ::: {custom-style="Received"}
-Received 05 August 2026, accepted xxxx
+Received 05 August 2026, accepted 22 October 2026
 :::
 
 ::: {custom-style="Abstract Heading"}

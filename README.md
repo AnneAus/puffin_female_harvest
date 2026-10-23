@@ -78,7 +78,7 @@ The flags were added with `scripts/flag_uncertain_dates.R`; the dates themselves
 
 If you use this code or data, please cite the article:
 
-> Ausems, A.N.M.A. & Jensen, J.-K. (in press). Pre-breeding Atlantic Puffins *Fratercula arctica* are disappearing from Faroese colonies. *Marine Ornithology* 54.
+> Ausems, A.N.M.A. & Jensen, J.-K. (in press; accepted 22 October 2026). Pre-breeding Atlantic Puffins *Fratercula arctica* are disappearing from Faroese colonies. *Marine Ornithology* 54.
 
 and/or this repository — see `CITATION.cff` (GitHub's "Cite this repository" button uses this automatically), or the archived Zenodo record: [10.5281/zenodo.21780560](https://doi.org/10.5281/zenodo.21780560). This DOI always resolves to the latest version; each release also has its own DOI, listed on the Zenodo record (v1.0.0, the submitted manuscript: [10.5281/zenodo.21780561](https://doi.org/10.5281/zenodo.21780561); v1.1.0, the first revision: [10.5281/zenodo.23393736](https://doi.org/10.5281/zenodo.23393736); v2.0.0, the accepted manuscript: [10.5281/zenodo.23587495](https://doi.org/10.5281/zenodo.23587495)).
 
