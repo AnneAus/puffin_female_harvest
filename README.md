@@ -24,9 +24,10 @@ Ongoing climate change and increasing human-induced environmental change are cau
 ├── figures/                # rendered figure files
 ├── scripts/
 │   ├── get_faroe_coastline.R  # (re-)fetches the coastline from OpenStreetMap; not run on render
-│   ├── bold_fig_captions.R
+│   ├── bold_fig_captions.R    # post-render Word layout fixes (run after each render)
 │   └── flag_uncertain_dates.R  # adds date_uncertain/date_note flags to data/data.rds and data.csv
 ├── references.bib          # bibliography
+├── renv.lock               # R and package versions used for the analysis
 ├── Marine_Ornithology.csl  # citation style for the target journal
 └── MO_reference_doc.docx / MO_Styles_Template_APA.docx  # Marine Ornithology submission templates
 ```
@@ -47,7 +48,12 @@ The flags were added with `scripts/flag_uncertain_dates.R`; the dates themselves
 ## Reproducing the analysis
 
 1. Open `puffin_female_harvest.Rproj` in RStudio.
-2. Install dependencies:
+2. Install dependencies. The exact versions used for the published analysis (R 4.6.1, brms 2.23.0, rstan 2.32.7 and all other packages) are recorded in `renv.lock`; to restore them, install renv and run `renv::restore()` in the project folder:
+   ```r
+   install.packages("renv")
+   renv::restore()
+   ```
+   (`seabiRd` is installed from GitHub, grwhumphries/seabiRd, and `rnaturalearthhires` from the rOpenSci r-universe.) Alternatively, install the current versions:
    ```r
    install.packages(c("tidyverse", "brms", "bayesplot", "knitr",
                        "sf", "rnaturalearth", "rnaturalearthhires",
@@ -61,11 +67,20 @@ The flags were added with `scripts/flag_uncertain_dates.R`; the dates themselves
    quarto::quarto_render("manuscript/manuscript.qmd")
    quarto::quarto_render("manuscript/appendix.qmd")
    ```
+   Then apply the Marine Ornithology layout that Quarto can't produce (bold figure/table labels, table rules, blank lines around headings):
+   ```sh
+   Rscript scripts/bold_fig_captions.R manuscript/manuscript.docx
+   Rscript scripts/bold_fig_captions.R manuscript/appendix.docx
+   ```
    Model fits are cached in `output/*.rds` and are only refit if the data or model specification changes (`file_refit = "on_change"`), so re-rendering after a text-only edit is fast.
 
 ## Citation
 
-If you use this code or data, please cite the associated manuscript (details to be added on publication) and/or this repository — see `CITATION.cff` (GitHub's "Cite this repository" button uses this automatically), or the archived Zenodo record: [10.5281/zenodo.21780560](https://doi.org/10.5281/zenodo.21780560). This DOI always resolves to the latest version; each release also has its own DOI, listed on the Zenodo record (v1.0.0, the submitted manuscript: [10.5281/zenodo.21780561](https://doi.org/10.5281/zenodo.21780561)).
+If you use this code or data, please cite the article:
+
+> Ausems, A.N.M.A. & Jensen, J.-K. (in press). Pre-breeding Atlantic Puffins *Fratercula arctica* are disappearing from Faroese colonies. *Marine Ornithology* 54.
+
+and/or this repository — see `CITATION.cff` (GitHub's "Cite this repository" button uses this automatically), or the archived Zenodo record: [10.5281/zenodo.21780560](https://doi.org/10.5281/zenodo.21780560). This DOI always resolves to the latest version; each release also has its own DOI, listed on the Zenodo record (v1.0.0, the submitted manuscript: [10.5281/zenodo.21780561](https://doi.org/10.5281/zenodo.21780561); v1.1.0, the first revision: [10.5281/zenodo.23393736](https://doi.org/10.5281/zenodo.23393736); v2.0.0, the accepted manuscript).
 
 ## License
 
