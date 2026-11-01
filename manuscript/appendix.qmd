@@ -8,10 +8,10 @@ format:
 csl: ../Marine_Ornithology.csl
 bibliography: ../references.bib
 crossref:
-  fig-title: "**Fig. S**"
-  fig-prefix: "Fig. S"
-  tbl-title: "Table S"
-  tbl-prefix: "Table S"
+  fig-title: "**Fig. A**"
+  fig-prefix: "Fig. A"
+  tbl-title: "Table A"
+  tbl-prefix: "Table A"
   title-delim: "."
 execute:
   echo: false

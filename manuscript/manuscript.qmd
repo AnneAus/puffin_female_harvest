@@ -469,6 +469,11 @@ map1 <- ggplot(data = faroe_coastline) +
                   data = colonies,
                   nudge_y = c(0, -0.02),
                   nudge_x = c(0.17, 0)) +
+  annotate("text", x = -7.6, y = 62.43, label = "Føroyar",
+           size = 10.33, fontface = "italic") +
+  # same size as the caption (9.6 pt); "Føroyar" above is sized to match its width
+  annotate("text", x = -7.6, y = 62.37, label = "(Eng. the Faroe Islands)",
+           size = 3.37) +
   ggspatial::annotation_north_arrow(location = "bl", which_north = "true",
         pad_x = unit(0.15, "in"), pad_y = unit(0.25, "in"),
         height = unit(0.5, "in"), width = unit(0.4, "in"),
@@ -478,8 +483,15 @@ map1 <- ggplot(data = faroe_coastline) +
        y = "Latitude (Decimal Degrees)",
        caption = "© OpenStreetMap contributors, ODbL 1.0")
 
+# ISO 3166-1 alpha-2 codes, placed by hand on land
+country_codes <- data.frame(code = c("IS", "NO", "GB", "IE", "NL"),
+                            lon = c(-17.5, 8.5, -1.4, -8, 5.45),
+                            lat = c(64.4, 60.2, 52.8, 53.2, 52.3))
+
 inset <- ggplot(data = world) +
   geom_sf(col = "black", fill = NA) +
+  geom_text(aes(x = lon, y = lat, label = code),
+            data = country_codes, size = 3) +
   coord_sf(xlim = c(-20, 10), ylim = c(50, 65),
            expand = FALSE) +
   geom_rect(xmin = map1_xlim[1], xmax = map1_xlim[2],
@@ -497,7 +509,7 @@ map1 <- map1 +
 
 map1
 
-ggsave("../figures/map1.tiff", width = 7, height = 7 * map1_aspect, dpi = 500)
+ggsave("../figures/map1.tiff", map1, width = 7, height = 7 * map1_aspect, dpi = 600)
 ```
 
 {{< pagebreak >}}
@@ -538,7 +550,7 @@ mod_marg_bar <- marginal_summary |>
 
 mod_marg_bar
 
-ggsave("../figures/model_predictions_marginal_bar.tiff", mod_marg_bar, width = 7, height = 5, dpi = 500)
+ggsave("../figures/model_predictions_marginal_bar.tiff", mod_marg_bar, width = 7, height = 5, dpi = 600)
 ```
 
 {{< pagebreak >}}
@@ -585,7 +597,7 @@ mod_pred <- preds |>
 
 mod_pred
 
-ggsave("../figures/model_predictions.tiff", mod_pred, width = 7, height = 5, dpi = 500)
+ggsave("../figures/model_predictions.tiff", mod_pred, width = 7, height = 5, dpi = 600)
 ```
 
 {{< pagebreak >}}
@@ -613,11 +625,18 @@ mod2_pred <- preds2 |>
   scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +
   labs(x = "Year",
        y = "Probability of brood patches",
-       size = expression(italic(n)))
+       size = expression(italic(n))) +
+  # legend inside the empty top-right corner, as requested by the editor
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.96, 0.95),
+        legend.justification = c(1, 1),
+        legend.direction = "horizontal",
+        legend.title.position = "top",
+        legend.title = element_text(hjust = 0.5))
 
 mod2_pred
 
-ggsave("../figures/model_broodspot_breeders.tiff", mod2_pred, width = 7, height = 5)
+ggsave("../figures/model_broodspot_breeders.tiff", mod2_pred, width = 7, height = 5, dpi = 600)
 ```
 
 {{< pagebreak >}}

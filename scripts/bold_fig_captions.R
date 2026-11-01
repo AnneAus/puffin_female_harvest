@@ -81,13 +81,13 @@ caption_paras <- xml_find_all(
 # it's correct regardless of source-file/locale encoding.
 nbsp <- intToUtf8(0xA0)
 space_class <- paste0("[ ", nbsp, "]")
-prefix_pattern <- paste0("^", space_class, "*Fig\\.", space_class, "*S?[0-9]+\\.")
+prefix_pattern <- paste0("^", space_class, "*Fig\\.", space_class, "*[SA]?[0-9]+\\.")
 
-# --- Supplementary labels: "Fig. S 1." / "Table S 1." -> "Fig. S1." / "Table S1" ---
-# Quarto puts a (non-breaking) space between a "Fig. S"/"Table S" title and the
+# --- Appendix labels: "Fig. A 1." / "Table A 1." -> "Fig. A1." / "Table A1" (or S) ---
+# Quarto puts a (non-breaking) space between a "Fig. A"/"Table A" title and the
 # number, sometimes in the same run and sometimes split across two runs.
-label_s_end <- paste0("(Fig\\.|Table)", space_class, "*S$")
-label_s_gap <- paste0("((Fig\\.|Table)", space_class, "*S)", space_class, "+([0-9])")
+label_s_end <- paste0("(Fig\\.|Table)", space_class, "*[SA]$")
+label_s_gap <- paste0("((Fig\\.|Table)", space_class, "*[SA])", space_class, "+([0-9])")
 label_paras <- xml_find_all(
   doc,
   paste0(".//w:p[w:pPr/w:pStyle[@w:val='ImageCaption']] | ",
@@ -163,7 +163,7 @@ for (p in caption_paras) {
 }
 
 # --- Table captions: "Table N. Title" -> bold "Table N" line + "Title" line ---
-tbl_prefix_pattern <- paste0("^", space_class, "*Table", space_class, "*S?[0-9]+")
+tbl_prefix_pattern <- paste0("^", space_class, "*Table", space_class, "*[SA]?[0-9]+")
 tbl_full_pattern <- paste0(tbl_prefix_pattern, "\\.?", space_class, "*")
 
 n_tbl_captions <- 0
