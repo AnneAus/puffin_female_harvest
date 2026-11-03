@@ -173,7 +173,7 @@ diag_row <- function(fit, loo_fit, label) {
 }
 
 diagnostics_table <- bind_rows(
-  diag_row(m01, loo_m1, "M1: breeding status ~ year x brood patches"),
+  diag_row(m01, loo_m1, "M1: breeding status ~ year × brood patches"),
   diag_row(m02, loo_m2, "M2: brood patches ~ year (breeders only)"),
   diag_row(m01_sens2007, loo_sens2007, "M1, 2007 excluded"),
   diag_row(m01_sens_mykines, loo_sens_mykines, "M1, Mykines (2007–2008) excluded")
@@ -268,7 +268,7 @@ mcmc_model2007
 
 ```{r fig-pp-model-mykines}
 #| label: fig-pp-model-mykines
-#| fig-cap: "Posterior predictive check for the primary model refit excluding the individuals collected on Mykines (2007 and 2008 breeding seasons)."
+#| fig-cap: "Posterior predictive check for the primary model refit excluding the individuals collected on Mykines, FO (2007 and 2008 breeding seasons)."
 #| fig-width: 7
 #| fig-height: 5
 
@@ -279,7 +279,7 @@ pp_model_mykines
 
 ```{r fig-mcmc-model-mykines}
 #| label: fig-mcmc-model-mykines
-#| fig-cap: "MCMC trace plots for all parameters of the primary model refit excluding the individuals collected on Mykines (2007 and 2008 breeding seasons). Brood.spot = brood patches."
+#| fig-cap: "MCMC trace plots for all parameters of the primary model refit excluding the individuals collected on Mykines, FO (2007 and 2008 breeding seasons). Brood.spot = brood patches."
 #| fig-width: 7
 #| fig-height: 8
 
