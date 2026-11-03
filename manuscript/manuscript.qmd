@@ -154,9 +154,6 @@ m01_prior <- brm(bred ~ year_c * brood.spot,
                  file_refit = "on_change",
                  sample_prior = "only")
 
-set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
-pp_prior <- pp_check(m01_prior, type = "stat", stat = "mean")
-ggsave("../figures/prior_pred_check.png", pp_prior, dpi = 500)
 
 m01 <- brm(bred ~ year_c * brood.spot,
            data = females,
@@ -173,15 +170,9 @@ m01 <- brm(bred ~ year_c * brood.spot,
            save_pars = save_pars(all = TRUE))
 
 summary(m01)
-set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
-pp_model <- pp_check(m01, type = "stat", stat = "mean")
-ggsave("../figures/model_pred_check.png", pp_model, dpi = 500)
 
 loo_m1 <- loo(m01)
 
-mcmc_dat <- bayesplot::mcmc_trace_data(m01)
-mcmc_model <- bayesplot::mcmc_trace(m01)
-ggsave("../figures/mcmc_plot.png", mcmc_model, dpi = 500)
 ```
 
 ```{r robustness-check1}
@@ -211,15 +202,9 @@ m02 <- brm(brood.spot ~ year_c,
            save_pars = save_pars(all = TRUE))
 
 summary(m02)
-set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
-pp_model2 <- pp_check(m02, type = "stat", stat = "mean")
-ggsave("../figures/model2_pred_check.png", pp_model2, dpi = 500)
 
 loo_m2 <- loo(m02)
 
-mcmc_dat2 <- bayesplot::mcmc_trace_data(m02)
-mcmc_model2 <- bayesplot::mcmc_trace(m02)
-ggsave("../figures/mcmc_plot2.png", mcmc_model2, dpi = 500)
 ```
 
 ```{r robustness-check2}
@@ -242,15 +227,9 @@ m01_sens2007 <- brm(bred ~ year_c * brood.spot,
                      save_pars = save_pars(all = TRUE))
 
 summary(m01_sens2007)
-set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
-pp_model2007 <- pp_check(m01_sens2007, type = "stat", stat = "mean")
-ggsave("../figures/model2007_pred_check.png", pp_model2007, dpi = 500)
 
 loo_m1_sens2007 <- loo(m01_sens2007)
 
-mcmc_dat2007 <- bayesplot::mcmc_trace_data(m01_sens2007)
-mcmc_model2007 <- bayesplot::mcmc_trace(m01_sens2007)
-ggsave("../figures/mcmc_plot2007.png", mcmc_model2007, dpi = 500)
 
 ```
 
@@ -276,14 +255,9 @@ m01_sens_mykines <- brm(bred ~ year_c * brood.spot,
                         save_pars = save_pars(all = TRUE))
 
 summary(m01_sens_mykines)
-set.seed(42)  # pp_check simulates new data, so fix it for a stable figure
-pp_model_mykines <- pp_check(m01_sens_mykines, type = "stat", stat = "mean")
-ggsave("../figures/model_mykines_pred_check.png", pp_model_mykines, dpi = 500)
 
 loo_m1_sens_mykines <- loo(m01_sens_mykines)
 
-mcmc_model_mykines <- bayesplot::mcmc_trace(m01_sens_mykines)
-ggsave("../figures/mcmc_plot_mykines.png", mcmc_model_mykines, dpi = 500)
 ```
 
 # Results
@@ -510,6 +484,7 @@ map1 <- map1 +
 map1
 
 ggsave("../figures/map1.tiff", map1, width = 7, height = 7 * map1_aspect, dpi = 600)
+ggsave("../figures/map1.png", map1, width = 7, height = 7 * map1_aspect, dpi = 600)
 ```
 
 {{< pagebreak >}}
@@ -551,6 +526,7 @@ mod_marg_bar <- marginal_summary |>
 mod_marg_bar
 
 ggsave("../figures/model_predictions_marginal_bar.tiff", mod_marg_bar, width = 7, height = 5, dpi = 600)
+ggsave("../figures/model_predictions_marginal_bar.png", mod_marg_bar, width = 7, height = 5, dpi = 600)
 ```
 
 {{< pagebreak >}}
@@ -598,6 +574,7 @@ mod_pred <- preds |>
 mod_pred
 
 ggsave("../figures/model_predictions.tiff", mod_pred, width = 7, height = 5, dpi = 600)
+ggsave("../figures/model_predictions.png", mod_pred, width = 7, height = 5, dpi = 600)
 ```
 
 {{< pagebreak >}}
@@ -637,6 +614,7 @@ mod2_pred <- preds2 |>
 mod2_pred
 
 ggsave("../figures/model_broodspot_breeders.tiff", mod2_pred, width = 7, height = 5, dpi = 600)
+ggsave("../figures/model_broodspot_breeders.png", mod2_pred, width = 7, height = 5, dpi = 600)
 ```
 
 {{< pagebreak >}}
